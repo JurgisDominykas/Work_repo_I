@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otrs_package version="0.1.24">
+    <Name>FieldTree</Name>
+    <Version>0.1.24</Version>
+    <Framework>3.1.x</Framework>
+    <Vendor>Atviro kodo sprendimai</Vendor>
+    <URL>http://www.aksprendimai.lt/</URL>
+    <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <ChangeLog Version="0.1.24" Date="2014-05-07 22:28:00">Fix GenericAgent compatibility</ChangeLog>
+    <ChangeLog Version="0.1.23" Date="2013-02-26 10:07:00">CSS korekcijos</ChangeLog>
+    <ChangeLog Version="0.1.21" Date="2012-11-06 12:54:00">Ideta users grupe i AgentFieldTree modulio registracija</ChangeLog>
+    <ChangeLog Version="0.1.20" Date="2012-10-10 16:32:00">EmptyBranch pataisymas (praleistas svn commitas)</ChangeLog>
+    <ChangeLog Version="0.1.19" Date="2012-09-21 18:58:00">EmptyBranch pataisymas</ChangeLog>
+    <ChangeLog Version="0.1.18" Date="2012-09-17 19:18:00">New line bugo pataisymas</ChangeLog>
+    <ChangeLog Version="0.1.17" Date="2012-09-17 18:31:00">-</ChangeLog>
+    <ChangeLog Version="0.1.16" Date="2012-09-17 17:43:00">Implement 3rd level for FieldTree.</ChangeLog>
+    <ChangeLog Version="0.1.15" Date="2012-08-16 14:47:00">Change RenderReadableValue to generate HTML to workaround some stuff.</ChangeLog>
+    <ChangeLog Version="0.1.14" Date="2012-08-16 11:48:00">Dynamic field backend imrovements and design fixes.</ChangeLog>
+    <ChangeLog Version="0.1.13" Date="2012-08-10 14:31:00">Some improvements.</ChangeLog>
+    <ChangeLog Version="0.1.12" Date="2012-08-09 22:33:00">Dynamic field backend fixes and improvements.</ChangeLog>
+    <ChangeLog Version="0.1.11" Date="2012-08-06 14:01:00">Fieldtree client-side code fixes.</ChangeLog>
+    <ChangeLog Version="0.1.10" Date="2012-07-26 22:32:00">Position field and sorting for field tree, validation, retrieval FieldTreeID by ValueSetID and user interface to display saved form.</ChangeLog>
+    <ChangeLog Version="0.1.9" Date="2012-07-22 21:14:00">Interface fixes.</ChangeLog>
+    <ChangeLog Version="0.1.8" Date="2012-07-20 14:29:00">Disallow ParentID and FieldTreeID editing in FieldTree administration.</ChangeLog>
+    <ChangeLog Version="0.1.7" Date="2012-07-18 15:40:00">Add preliminary DynamicField backend implementation.</ChangeLog>
+    <ChangeLog Version="0.1.6" Date="2012-07-09 15:40:00">Add Customer module implementation.</ChangeLog>
+    <ChangeLog Version="0.1.5" Date="2012-06-29 12:20:00">Port admin interface to OTRS version 3.x and other bug-fixes.</ChangeLog>
+    <ChangeLog Version="0.1.4" Date="2012-06-27 18:27:00">Remove AKS&lt;EMail|Problem&gt;Ticket dependence.</ChangeLog>
+    <ChangeLog Version="0.1.3" Date="2012-06-15 17:00:00">Added GeneralCatalog dependance.</ChangeLog>
+    <Description Lang="en">FieldTree component (multi-level dynamic fields).</Description>
+    <PackageRequired Version="0.0.0">GeneralCatalog</PackageRequired>
+    <Filelist>
+        <File Permission="664" Location="Kernel/Config/Files/FieldTree.xml"/>
+        <File Permission="664" Location="Kernel/Config/Files/ZZZFieldTree.pm"/>
+        <File Permission="664" Location="Kernel/Modules/AdminDynamicFieldFieldTree.pm"/>
+        <File Permission="664" Location="Kernel/Modules/AdminFieldTree.pm"/>
+        <File Permission="664" Location="Kernel/Modules/AgentFieldTree.pm"/>
+        <File Permission="664" Location="Kernel/Modules/CustomerFieldTree.pm"/>
+        <File Permission="664" Location="Kernel/Output/HTML/Standard/AdminFieldTree.dtl"/>
+        <File Permission="664" Location="Kernel/Output/HTML/Standard/DynamicFieldFieldTree.dtl"/>
+        <File Permission="664" Location="Kernel/Output/HTML/Standard/FieldTree.dtl"/>
+        <File Permission="664" Location="Kernel/Output/HTML/Standard/FieldTreeFields.dtl"/>
+        <File Permission="664" Location="Kernel/Output/HTML/Standard/FieldTreeFieldsSearch.dtl"/>
+        <File Permission="664" Location="Kernel/Output/HTML/Standard/FieldTreeMultiCheckbox.dtl"/>
+        <File Permission="664" Location="Kernel/System/DynamicField/Backend/FieldTree.pm"/>
+        <File Permission="664" Location="Kernel/System/FieldTree.pm"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/base.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/check1.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/check2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/check3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/check_over1.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/check_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/check_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/empty.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/folder.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/folderopen.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/globe.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/imgfolder.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/line0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/line1.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/line2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/line3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/line4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/line5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linebg2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linebgfull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linebgfull.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linebg.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linefull0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linefull1.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linefull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linefull3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linefull4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/linefull5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/load.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/lock.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minusfull_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus_over0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/minus_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/musicfolder.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/page.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plusfull_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus_over0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/plus_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/pt2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/pt.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_line0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_line1.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_line2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_line3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_line4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_line5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linebg2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linebgfull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linebgfull.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linebg.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linefull0.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linefull1.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linefull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linefull3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linefull4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_linefull5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minusfull_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_minus_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plusfull_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus_over2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus_over3.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus_over4.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_plus_over5.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/rtl_pt2.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/trashfull.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/trash.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/unlock.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/wait.gif"/>
+        <File Permission="664" Location="var/httpd/htdocs/images/AKS/treeview/watch.gif"/>
+        <File Permission="775" Location="var/httpd/htdocs/js/FieldTree.js"/>
+        <File Permission="664" Location="var/httpd/htdocs/js/Tree.js"/>
+        <File Permission="664" Location="var/httpd/htdocs/js/Tree-optimized.js"/>
+        <File Permission="664" Location="var/httpd/htdocs/skins/Agent/default/css/FieldTree.css"/>
+    </Filelist>
+    <DatabaseInstall Type="post">
+        <TableCreate Name="field_tree">
+            <Column Name="id" Required="true" PrimaryKey="True" AutoIncrement="true" Type="INTEGER"/>
+            <Column Name="field_tree_class" Required="true" Size="100" Type="VARCHAR"/>
+            <Column Name="name" Required="true" Size="255" Type="VARCHAR"/>
+            <Column Name="friendly_name" Required="false" Size="1000" Type="VARCHAR"/>
+            <Column Name="parent_id" Required="false" Type="INTEGER"/>
+            <Column Name="valid_id" Required="true" Type="SMALLINT"/>
+            <Column Name="css_class" Required="false" Size="30" Type="VARCHAR"/>
+            <Column Name="comments" Required="false" Size="2000" Type="VARCHAR"/>
+            <Column Name="create_time" Required="true" Type="DATE"/>
+            <Column Name="create_by" Required="true" Type="INTEGER"/>
+            <Column Name="change_time" Required="true" Type="DATE"/>
+            <Column Name="change_by" Required="true" Type="INTEGER"/>
+            <Column Name="position" Required="false" Type="INTEGER"/>
+            <Index Name="field_tree_class">
+                <IndexColumn Name="field_tree_class"/>
+            </Index>
+            <Index Name="parent_id">
+                <IndexColumn Name="parent_id"/>
+            </Index>
+            <Index Name="valid_id">
+                <IndexColumn Name="valid_id"/>
+            </Index>
+            <ForeignKey ForeignTable="valid">
+                <Reference Local="valid_id" Foreign="id"/>
+            </ForeignKey>
+            <ForeignKey ForeignTable="users">
+                <Reference Local="create_by" Foreign="id"/>
+                <Reference Local="change_by" Foreign="id"/>
+            </ForeignKey>
+        </TableCreate>
+        <TableCreate Name="field_tree_field">
+            <Column Name="id" Required="true" PrimaryKey="True" AutoIncrement="true" Type="INTEGER"/>
+            <Column Name="field_type" Required="true" Size="100" Type="VARCHAR"/>
+            <Column Name="name" Required="true" Size="255" Type="VARCHAR"/>
+            <Column Name="friendly_name" Required="false" Size="1000" Type="VARCHAR"/>
+            <Column Name="required" Required="false" Size="100" Type="VARCHAR"/>
+            <Column Name="field_tree_id" Required="true" Type="INTEGER"/>
+            <Column Name="template" Required="true" Size="5000" Type="VARCHAR"/>
+            <Column Name="target" Required="true" Size="1000" Type="VARCHAR"/>
+            <Column Name="position" Required="true" Type="INTEGER"/>
+            <Column Name="valid_id" Required="true" Type="SMALLINT"/>
+            <Column Name="hidden" Required="true" Default="0" Type="SMALLINT"/>
+            <Column Name="comments" Required="false" Size="200" Type="VARCHAR"/>
+            <Column Name="create_time" Required="true" Type="DATE"/>
+            <Column Name="create_by" Required="true" Type="INTEGER"/>
+            <Column Name="change_time" Required="true" Type="DATE"/>
+            <Column Name="change_by" Required="true" Type="INTEGER"/>
+            <Index Name="name">
+                <IndexColumn Name="name"/>
+            </Index>
+            <Index Name="field_tree_id">
+                <IndexColumn Name="field_tree_id"/>
+            </Index>
+            <Index Name="valid_id">
+                <IndexColumn Name="valid_id"/>
+            </Index>
+            <Index Name="hidden">
+                <IndexColumn Name="hidden"/>
+            </Index>
+            <ForeignKey ForeignTable="field_tree">
+                <Reference Local="field_tree_id" Foreign="id"/>
+            </ForeignKey>
+            <ForeignKey ForeignTable="valid">
+                <Reference Local="valid_id" Foreign="id"/>
+            </ForeignKey>
+            <ForeignKey ForeignTable="users">
+                <Reference Local="create_by" Foreign="id"/>
+                <Reference Local="change_by" Foreign="id"/>
+            </ForeignKey>
+        </TableCreate>
+        <TableCreate Name="field_tree_value_sets">
+            <Column Name="id" Required="true" PrimaryKey="true" AutoIncrement="true" Type="BIGINT"/>
+        </TableCreate>
+        <TableCreate Name="field_tree_value">
+            <Column Name="id" Required="true" PrimaryKey="True" AutoIncrement="true" Type="BIGINT"/>
+            <Column Name="field_id" Required="false" Type="INTEGER"/>
+            <Column Name="field_tree_id" Required="false" Type="INTEGER"/>
+            <Column Name="value_set_id" Required="true" Type="BIGINT"/>
+            <Column Name="value_int" Required="false" Type="INTEGER"/>
+            <Column Name="value_char" Required="false" Size="50" Type="VARCHAR"/>
+            <Column Name="value_text" Required="false" Size="20000" Type="VARCHAR"/>
+            <Column Name="value_double" Required="false" Size="10,2" Type="DECIMAL"/>
+            <Column Name="value_datetime" Required="false" Type="DATE"/>
+            <Index Name="field_id">
+                <IndexColumn Name="field_id"/>
+            </Index>
+            <Index Name="field_tree_id">
+                <IndexColumn Name="field_tree_id"/>
+            </Index>
+            <Index Name="value_set_id">
+                <IndexColumn Name="value_set_id"/>
+            </Index>
+            <ForeignKey ForeignTable="field_tree_field">
+                <Reference Local="field_id" Foreign="id"/>
+            </ForeignKey>
+            <ForeignKey ForeignTable="field_tree_value_sets">
+                <Reference Local="value_set_id" Foreign="id"/>
+            </ForeignKey>
+            <ForeignKey ForeignTable="field_tree">
+                <Reference Local="field_tree_id" Foreign="id"/>
+            </ForeignKey>
+        </TableCreate> 
+    </DatabaseInstall>
+</otrs_package>

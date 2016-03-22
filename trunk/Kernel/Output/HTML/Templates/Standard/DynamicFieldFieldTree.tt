@@ -1,0 +1,51 @@
+[% RenderBlockStart("FieldTree") %]
+<ul class="FieldTree FieldTreeForm">
+	<input type="hidden" name="[% Data.FieldName %]_Selected" value="" class="[% Data.MandatoryFieldTreeClass %]" id="ProblemTypeIdError" />
+	<input type="hidden" name="[% Data.FieldName %]_FieldTreeID" id="[% Data.FieldName %]_ProblemTypeIDField" value="[% Data.FieldTreeID | html %]" />
+	<input type="hidden" name="[% Data.FieldName %]" class="FieldTreeName" value="[% Data.ValueSetID %]" />
+    <input type="hidden" name="[% Data.FieldName %]_ReadOnly" value="[% Data.ReadOnly %]" />
+    <input type="hidden" name="[% Data.FieldName %]_Mandatory" value="[% Data.Mandatory %]" />
+    <input type="hidden" name="[% Data.FieldName %]_FieldTreesToOpen" value="[% Data.FieldTreeRecursiveIDs %]" />
+[% RenderBlockStart("FieldTreeField") %]
+    <input type="hidden" name="[% Data.FieldTreeFieldName %]" class="[% Data.FieldName %]_Field_Value" value="[% Data.FieldTreeFieldValue %]" />
+[% RenderBlockEnd("FieldTreeField") %]
+	<span class="error">Privalote u&#382;pildyti vien&#261; i&#353; &#353;ak&#371;!</span>
+	<ul class="FieldTree">
+[% RenderBlockStart("FieldTreeLevel1") %]
+		<li class="[% Data.CSSOpenClass | html %] FieldTreeItem"><a class="Level1Opener" rel="[% Data.id | html %]"><span>&#9656;</span>&nbsp;&nbsp;[% Data.txt %]</a></li>
+		<ul class="FieldTreeHolder-Level1 FieldTreeHolder" id="FieldTreeHolder-[% Data.id | html %]">
+            <li class="ForDynamicLoad"><div class="DynamiclyLoadedContent"><!-- W3C --></div><div class="Clear"><!-- W3C --></div></li>
+[% RenderBlockStart("EmptyBranchLevel1") %]
+            <li class="EmptyBranch">&#352;ioje kategorijoje n&#279;ra element&#371;.</li>
+[% RenderBlockEnd("EmptyBranchLevel1") %]
+[% RenderBlockStart("FieldTreeLevel2") %]
+            <li class="FieldTreeItem"><a class="Level2Opener" rel="[% Data.id | html %]"><span>&#9656;</span>&nbsp;&nbsp;[% Data.txt %]</a></li>
+            <ul class="FieldTreeHolder-Level2 FieldTreeHolder [% Data.CSSOpenClass | html %]" id="FieldTreeHolder-[% Data.id | html %]">
+                <li class="ForDynamicLoad"><div class="DynamiclyLoadedContent">[% Data.FieldTreeFields %]<!-- W3C --></div><div class="Clear"><!-- W3C --></div></li>
+[% RenderBlockStart("EmptyBranchLevel2") %]
+                <li class="EmptyBranch">&#352;ioje kategorijoje n&#279;ra element&#371;.</li>
+[% RenderBlockEnd("EmptyBranchLevel2") %]
+[% RenderBlockStart("FieldTreeLevel3") %]
+                <li class="FieldTreeHolderItem"><a class="Level3Opener" rel="[% Data.id | html %]">&#8226;&nbsp;&nbsp;[% Data.txt %]</a></li>
+                <div class="FieldTreeHolder-Level3 [% Data.CSSOpenClass | html %]" id="FieldTreeHolder-[% Data.id | html %]"><!-- for dynamic load --></div>
+                <div style="clear:both;"></div>
+[% RenderBlockEnd("FieldTreeLevel3") %]
+            </ul>
+[% RenderBlockEnd("FieldTreeLevel2") %]
+		</ul>
+[% RenderBlockEnd("FieldTreeLevel1") %]
+	</ul>
+[% RenderBlockEnd("FieldTree") %]
+[% RenderBlockStart("FieldTreePreview") %]
+[% RenderBlockStart("FieldTreeRecursiveName") %]
+<p>[% Data.ItemRecursiveName %]</p>
+[% RenderBlockEnd("FieldTreeRecursiveName") %]
+<ul class="FieldTreeHolder FieldTreePreview">
+	<input type="hidden" name="[% Data.FieldName %]_Selected" value="" id="ProblemTypeIdError" />
+	<input type="hidden" name="[% Data.FieldName %]_FieldTreeID" id="[% Data.FieldName %]_ProblemTypeIDField" value="[% Data.FieldTreeID | html %]" />
+	<input type="hidden" name="[% Data.FieldName %]" class="FieldTreeName" value="[% Data.ValueSetID %]" />
+	<input type="hidden" name="[% Data.FieldName %]_ReadOnly" value="[% Data.ReadOnly %]" />
+	<div class="FieldTreeHolder-Level2" id="FieldTreeHolder-[% Data.FieldTreeID | html %]"><!-- for dynamic load --></div>
+	<div style="clear: both;"><!-- W3C --></div>
+</ul>
+[% RenderBlockEnd("FieldTreePreview") %]

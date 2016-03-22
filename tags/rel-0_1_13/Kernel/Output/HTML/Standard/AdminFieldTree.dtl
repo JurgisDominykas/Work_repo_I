@@ -1,0 +1,524 @@
+# --
+# AdminFieldTree.dtl - provides HTML form for FieldTree administration
+# Copyright (C) 2010-2012 Atviro kodo sprendimai, http://aksprendimai.lt/
+# --
+# $Id: AdminFieldTree.dtl,v 1.7 2009/05/18 09:40:47 mh Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+<!-- dtl:block:Overview -->
+<div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
+    <h1>$Text{"Field Tree Management"}</h1>
+    
+    <div class="Clear"></div>
+    
+    <div class="SidebarColumn">
+	<div class="WidgetSimple">
+	    <div class="Header">
+		<h2>$Text{"Actions"}</h2>
+	    </div>
+	    <div class="Content">
+		<ul class="ActionList">
+		    <li>
+			    <form action="$Env{"CGIHandle"}" method="get">
+		            <input type="hidden" name="Action" value="$Env{"Action"}">
+		            <input type="hidden" name="Subaction" value="ItemEdit">
+		            <input type="hidden" name="ItemID" value="NEW">
+		            
+		            <div>$Data{"ClassOptionStrg"}</div>
+		            <button class="CallForAction Plus" type="submit" value="$Text{"Add"}">
+		        	<span>$Text{"Add Field Tree Item"}</span>
+		    	    </button>
+		    	</form>
+		    </li>
+		    <li>
+			    <form action="$Env{"CGIHandle"}" method="get">
+		            <input type="hidden" name="Action" value="$Env{"Action"}">
+		            <input type="hidden" name="Subaction" value="ItemEdit">
+		            <input type="hidden" name="ItemID" value="NEW">
+		            <input type="hidden" name="Class" value="NEW">
+		            
+		            <button class="CallForAction Plus" type="submit" value="$Text{"Add"}">
+		        	<span>$Text{"Add a new FieldTree Class."}</span>
+		            </button>
+		        </form>
+		    </li>
+		</ul>
+	    </div>
+	</div>
+    </div>
+    
+    <div class="ContentColumn">
+	<div class="WidgetSimple">
+<!-- dtl:block:OverviewClass -->
+	    <div class="Header">
+		<h2>$Text{"List"}</h2>
+	    </div>
+	    <div class="Content">
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th>$Text{"Field Tree Class"}</th>
+			</tr>
+		    </thead>
+		    <tbody>
+<!-- dtl:block:OverviewClassList -->
+			<tr>
+			    <td>
+				<a class="AsBlock" href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemList&Class=$LQData{"Class"}">
+				$QData{"Class"}
+				</a>
+			    </td>
+			</tr>
+<!-- dtl:block:OverviewClassList -->
+		    </tbody>
+		</table>
+	    </div>
+<!-- dtl:block:OverviewClass -->
+
+<!-- dtl:block:OverviewItem -->
+	    <div class="Header">
+		<h2>$Text{"List"}</h2>
+	    </div>
+	    <div class="Content">
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th class="Center">$Text{"ID"}</th>
+			    <th class="W40pc">$Text{"Name"}</th>
+			    <th class="Center">$Text{"ParentID"}</th>
+			    <th class="Center">$Text{"Valid"}</th>
+			</tr>
+		    </thead>
+		    <tbody>
+<!-- dtl:block:OverviewItemList -->
+			<tr>
+			    <td class="Center">$QData{"ItemID"}</td>
+			    <td>
+				<a href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemEdit&ItemID=$QData{"ItemID"}">
+		                  $QData{"Name"}
+		                </a>
+		            </td>
+		            <td class="Center">$QData{"ParentID"}</td>
+		            <td class="Center">$Text{"$QData{"Valid"}"}</td>
+		        </tr>
+<!-- dtl:block:OverviewItemList -->
+		    </tbody>
+		</table>
+	    </div>
+<!-- dtl:block:OverviewItem -->
+
+<!-- dtl:block:ItemEdit -->
+	    <div class="Header">
+		<h2>$Text{"Item"} $Text{"Edit"}:</h2>
+	    </div>
+	    <div class="Content">
+		<form action="$Env{"CGIHandle"}" method="get" class="Validate">
+		    <input type="hidden" name="Action" value="$Env{"Action"}">
+		    <input type="hidden" name="Subaction" value="ItemSave">
+		    <input type="hidden" name="ItemID" value="$QData{"ItemID"}">
+		    <fieldset class="TableLike">
+<!-- dtl:block:ItemEditClassAdd -->
+			<label class="Mandatory" for="ClassDsc"><span class="Marker">*</span>$Text{"Field Tree Class"}</label>
+			<div class="Field">
+			    <input type="text" name="Class" id="ClassDsc" value="$QData{"Name"}" size="W50pc Validate_Required" maxlength="100" />
+			    <div id="ClassDscError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+			    <div id="ClassDscServerError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+			</div>
+			<div class="Clear"></div>
+<!-- dtl:block:ItemEditClassAdd -->
+<!-- dtl:block:ItemEditClassExist -->
+			<label>$Text{"Field Tree Class"}: </label>
+			<div class="Field">
+			    $QData{"Class"}
+			    <input type="hidden" name="Class" value="$QData{"Class"}">
+			</div>
+			<div class="Clear"></div>
+<!-- dtl:block:ItemEditClassExist -->
+			<label class="Mandatory" for="Name"><span class="Marker">*</span>$Text{"Name"}: </label>
+			<div class="Field">
+			    <input type="text" name="Name" id="Name" value="$QData{"Name"}" class="W50pc Validate_Required" maxlength="255"/>
+			    <div id="NameError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+			    <div id="NameServerError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FriendlyName">$Text{"Friendly Name"}: </label>
+			<div class="Field">
+			    <input type="text" name="FriendlyName" id="FriendlyName" value="$QData{"FriendlyName"}" class="W50pc" maxlength="1000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="CssClass">$Text{"Css Class"}: </label>
+			<div class="Field">
+			    <input type="text" name="CssClass" id="CssClass" value="$QData{"CssClass"}" class="W50pc" maxlength="30"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="ParentID">$Text{"ParentID"}: </label>
+			<div class="Field">
+			    <input type="text" name="ParentID" id="ParentID" value="$QData{"ParentID"}" class="W50pc Validate_PositiveNegativeNumbers" maxlength="45" readonly/>
+			    <div id="ParentIDError" class="TooltipErrorMessage"><p>$Text{"This field must be numeric."}</p></div>
+			    <div id="ParentIDServerError" class="TooltipErrorMessage"><p>$Text{"This must be a valid Field Tree branch ID or -1."}</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FPosition">$Text{"Position"}: </label>
+			<div class="Field">
+			    <input type="text" name="Position" id="FPosition" value="$QData{"Position"}" class="W50pc Validate_Number" maxlength="100"/>
+			    <div id="FPositionError" class="TooltipErrorMessage"><p>$Text{"This field must be numeric."}</p></div>
+			    <div id="FPositionServerError" class="TooltipErrorMessage"><p>$Text{"This field must be numeric."}</p></div>
+			</div>
+						
+						
+						
+						
+			<label for="ValidID">$Text{"Valid"}: </label>
+			<div class="Field">
+			    $Data{"ValidOptionStrg"}
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="Comment">$Text{"Comment"}: </label>
+			<div class="Field">
+			    <input type="text" name="Comment" id="Comment" value="$QData{"Comment"}" class="W50pc" maxlength="2000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<div class="Field SpacingTop">
+			    <button class="Primary" type="submit" id="Submit" value="$Text{"Submit"}">$Text{"Submit"}</button>
+			    $Text{"or"}
+			    <a href="$Env{"Baselink"}Action=$Env{"Action"}">$Text{"Cancel"}</a>
+			</div>
+			<div class="Clear"></div>
+			
+		    </fieldset>
+		</form>
+	    </div>
+
+<!-- dtl:block:OverviewChildItems -->
+	    <div class="Header">
+		<h2>$Text{"Child nodes"}:</h2>
+	    </div>
+	    <div class="Content">
+	    
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th class="Center">$Text{"ID"}</th>
+			    <th class="W60pc">$Text{"Name"}</th>
+			    <th class="Center">$Text{"Valid"}</th>
+			</tr>
+		    </thead>
+		    <tbody>
+<!-- dtl:block:OverviewChildItemList -->
+			<tr>
+			    <td class="Center">$QData{"ItemID"}</td>
+			    <td>
+				<a href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemEdit&ItemID=$QData{"ItemID"}">
+				    $QData{"Name"}
+				</a>
+			    </td>
+			    <td class="Center">$Text{"$QData{"Valid"}"}</td>
+			</tr>
+<!-- dtl:block:OverviewChildItemList -->
+		    </tbody>
+		</table>
+		<div class="Field SpacingTop">
+		    <form action="$Env{"CGIHandle"}" method="get">
+			    <input type="hidden" name="Action" value="$Env{"Action"}">
+			    <input type="hidden" name="Subaction" value="ItemEdit">
+			    <input type="hidden" name="ItemID" value="NEW">
+			    <input type="hidden" name="Class" value="$QData{"Class"}">
+			    <input type="hidden" name="ParentID" value="$QData{"ItemID"}">
+			    <button class="Primary" type="submit" id="AddNewChildNode" value="$Text{"Add new child node"}">$Text{"Add new child node"}</button>
+		    </form>
+		</div>
+	    </div>
+<!-- dtl:block:OverviewChildItems -->
+
+<!-- dtl:block:FieldEdit -->
+	    <div class="Header">
+		<h2>$Text{"Field"} $Text{"Edit"}</h2>
+	    </div>
+	    <div class="Content">
+		<div class="hidden-templates" style="display: none;">
+		    <span id="TemplateCaption_Default">$Text{"Template"}:</span><div id="Template_Default"><input type="text" name="Template" value="$QData{"Template"}" size="45" maxlength="100"></div>
+		    <span id="TemplateCaption_Select">$Text{"General Catalog class"}:</span><div id="Template_Select">$Data{"ClassOptionStrg"}</div>
+		    <span id="TemplateCaption_RuleEscalateTo">$Text{"Queue"}:</span><div id="Template_RuleEscalateTo">$Data{"QueueStr"}</div>
+		    <span id="TemplateCaption_RuleComment">$Text{"Comment template"}:</span><div id="Template_RuleComment"><textarea name="Template" style="width: 500px; height: 200px;">$Data{"Template"}</textarea>
+			<h3>Possible tags:</h3>
+			<dl>
+			    <dt>OTRS_TREE_&lt;FieldID&gt;</dt>
+			    <dd>Field from field tree value</dd>
+			    <dt>OTRS_TICKET_ID</dt>
+			    <dd>Ticket ID</dd>
+			    <dt>OTRS_TICKET_NUMBER</dt>
+			    <dd>Ticket number</dd>
+			    <dt>OTRS_QUEUE</dt>
+			    <dd>Ticket Queue</dd>
+			    <dt>OTRS_FIRST_NAME</dt>
+			    <dd>First name of person, creating a ticket</dd>
+			    <dt>OTRS_LAST_NAME</dt>
+			    <dd>Last name of person, creating a ticket</dd>
+			    <dt>OTRS_TICKET_*</dt>
+			    <dd>All ticket properties (Those properties are: N&#47;A)</dd>
+			    <dt>OTRS_CURRENT_*</dt>
+			    <dd>All current user properties (Those are: UserFirstname UserLastname UserLogin UserEmail ValidID)</dd>
+			    <dt>OTRS_CONFIG_*</dt>
+			    <dd>All config settings (For advanced users)</dd>
+			</dl>
+		    </div>
+		    <span id="TemplateCaption_UserInfoFetcher">$Text{"Target fields"}:</span><div id="Template_UserInfoFetcher">
+			 <table>
+			    <tr><td style="width: 180px"><label for="Template_UIF_1">$Text{"Cellular account number field ID"}: </label></td><td><input type="text" name="Template_UIF_CellularAccountNo" id="Template_UIF_1"/></td></tr>
+			    <tr><td><label for="Template_UIF_2">$Text{"Street name field ID"}: </label></td><td><input type="text" name="Template_UIF_StreetName" id="Template_UIF_2"/></td></tr>
+			    <tr><td><label for="Template_UIF_3">$Text{"Place name field ID"}: </label></td><td><input type="text" name="Template_UIF_PlaceName" id="Template_UIF_3"/></td></tr>
+			    <tr><td><label for="Template_UIF_4">$Text{"Area name field ID"}: </label></td><td><input type="text" name="Template_UIF_AreaName" id="Template_UIF_4"/></td></tr>
+			    <tr><td><label for="Template_UIF_5">$Text{"Country name field ID"}: </label></td><td><input type="text" name="Template_UIF_CountryName" id="Template_UIF_5"/></td></tr>
+			</table>
+		    </div>
+		</div>
+		<form action="$Env{"CGIHandle"}" method="get" id="FieldEditForm">
+		    <input type="hidden" name="Action" value="$Env{"Action"}">
+		    <input type="hidden" name="Subaction" value="FieldSave">
+		    <input type="hidden" name="ItemID" value="$QData{"FieldTreeID"}">
+		    <input type="hidden" name="FieldID" value="$QData{"FieldID"}">
+		    <fieldset class="TableLike">
+			<label class="Mandatory" for="FName"><span class="Marker">*</span>$Text{"Name"}: </label>
+			<div class="Field">
+			    <input type="text" name="Name" id="FName" value="$QData{"Name"}" class="W50pc Validate_Required" maxlength="255"/>
+			    <div id="FNameError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+			    <div id="FNameServerError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+<!-- dtl:block:FieldDetailsGeneral -->
+			<label for="FFriendlyName">$Text{"Friendly Name"}: </label>
+			<div class="Field">
+			    <input type="text" name="FriendlyName" id="FFriendlyName" value="$QData{"FriendlyName"}" class="W50pc" maxlength="1000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FieldType">$Text{"Field Type"}: </label>
+			<div class="Field">
+			    $Data{"FieldTypesStr"}
+			</div>
+			<div class="Clear"></div>
+			
+# FIXME: Kodel $QData{"Checked"}? WTF, gal bet "RequiredChecked" reiktu uzvadint?
+			<label for="FRequired">$Text{"Required"}: </label>
+			<div class="Field">
+			    <input type="checkbox" value="1" name="Required" id="FRequired" $QData{"Checked"}>
+			</div>
+			<div class="Clear"></div>
+			
+# FIXME: Kodel Nera "checked" nustatymo (nusimusa redaguojant?)
+			<label for="FHidden">$Text{"Hidden"}: </label>
+			<div class="Field">
+			    <input type="checkbox" value="1" name="Hidden" id="FHidden">
+			</div>
+			<div class="Clear"></div>
+			<label style="display: none;" for="Template_Selected">$Text{"Information"}: </label>
+            <div style="display: none;" class="Field">
+            
+$Include{"RichTextEditor"}
+                        <textarea id="Template_Selected" class="RichText $QData{"RichTextInvalid"}" name="Template_Selected" title="Message body" rows="15" cols="$Config{"Ticket::Frontend::TextAreaNote"}">$QData{"Template"}</textarea>
+                        <div id="Template_SelectedError" class="TooltipErrorMessage">
+                            <p>$Text{"This field is required."}</p>
+                        </div>
+                        <div id="Template_SelectedServerError" class="TooltipErrorMessage">
+                            <p>$Text{"This field is required."}</p>
+                        </div>
+                        
+            </div>
+            <div class="Clear"></div>
+			
+			<label for="FTemplate" id="TemplateCaptionContainer">$Text{"Template"}: </label>
+			
+			<div class="Field"  id="TemplateContainer">
+			    <input type="text" name="Template" id="FTemplate" value="$QData{"Template"}" class="W50pc" maxlength="100"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FTarget">$Text{"Target"}: </label>
+			<div class="Field">
+			    <input type="text" name="Target" id="FTarget" value="$QData{"Target"}" class="W50pc" maxlength="1000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FPosition">$Text{"Position"}: </label>
+			<div class="Field">
+			    <input type="text" name="Position" id="FPosition" value="$QData{"Position"}" class="W50pc Validate_Number" maxlength="100"/>
+			    <div id="FPositionError" class="TooltipErrorMessage"><p>$Text{"This field must be numeric."}</p></div>
+			    <div id="FPositionServerError" class="TooltipErrorMessage"><p>$Text{"This field must be numeric."}</p></div>
+			</div>
+			<div class="Clear"></div>
+<!-- dtl:block:FieldDetailsGeneral -->
+<!-- dtl:block:FieldDetailsTemplates -->
+			<label for="FTemplateText">$Text{"Template text"}: </label>
+			<div class="Field">
+			    <input type="hidden" name="FieldType" value="Information">
+#FIXME: kodel name="Template"? Ar nesidubliuoja su auksciau esanciu
+			    <textarea name="Template" id="FTemplateText" cols="50" rows="10" class="W50pc">
+				$QData{"Template"}
+			    </textarea>
+			</div>
+			<div class="Clear"></div>
+<!-- dtl:block:FieldDetailsTemplates -->
+			<label for="FFieldTreeID">$Text{"FieldTreeID"}: </label>
+			<div class="Field">
+			    <input type="text" name="FieldTreeID" id="FFieldTreeID" value="$QData{"FieldTreeID"}" class="W50pc Validate_Number" maxlength="100" readonly/>
+			    <div id="ParentIDError" class="TooltipErrorMessage"><p>$Text{"This field must be numeric."}</p></div>
+			    <div id="ParentIDServerError" class="TooltipErrorMessage"><p>$Text{"This must be a valid Field Tree branch ID."}</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="ValidID">$Text{"Valid"}: </label>
+			<div class="Field">
+			    $Data{"ValidOptionStrg"}
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="Comment">$Text{"Comment"}: </label>
+			<div class="Field">
+			    <input type="text" name="Comment" id="Comment" value="$QData{"Comment"}" class="W50pc" maxlength="200"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<div class="Field SpacingTop">
+			    <button class="Primary" type="submit" id="Submit" value="$Text{"Submit"}">$Text{"Submit"}</button>
+			    $Text{"or"}
+			    <a href="$Env{"Baselink"}Action=$Env{"Action"}">$Text{"Cancel"}</a>
+			</div>
+			<div class="Clear"></div>
+		    </fieldset>
+		</form>
+	    </div>
+
+<!--dtl:js_on_document_complete-->
+<script type="text/javascript">//<![CDATA[
+    var selected = $('#FieldType').val();
+    
+    if(selected == 'Information')
+    {
+        $("#TemplateContainer").hide();
+        $("label[for=FTemplate]").hide();
+        $("#TemplateContainer > input").attr('name', 'Template_Selected');
+        $("#Template_Selected").attr('name', 'Template');
+        $("label[for=Template_Selected]").show();
+        $("#Template_Selected").parent().show();
+    }
+        
+    $('select#FieldType').bind('change', function(Event) {
+        var selected = $('#FieldType').val();
+        
+        if(selected == 'Information')
+        {
+            $("#TemplateContainer").hide();
+            $("label[for=FTemplate]").hide();
+            $("#TemplateContainer > input").attr('name', 'Template_Selected');
+            $("#Template_Selected").attr('name', 'Template');
+            $("label[for=Template_Selected]").show();
+            $("#Template_Selected").parent().show();
+        }
+        else
+        {
+            $("label[for=Template_Selected]").hide();
+            $("#Template_Selected").parent().hide();
+            
+            $("#TemplateContainer").show();
+            $("label[for=FTemplate]").show();
+            $("#TemplateContainer > input").attr('name', 'Template');
+            $("#Template_Selected").attr('name', 'Template_Selected');
+            
+            var template = $('#Template_'+selected);
+            var html, caption;
+            if (template.length) {
+                html = template.html();
+                caption = $('#TemplateCaption_'+selected).html();
+            }
+            else {
+                html = $('#Template_Default').html();
+                caption = $('#TemplateCaption_Default').html();
+            }
+            $('#TemplateContainer').html(html);
+            $('#TemplateCaptionContainer').html(caption);
+        }
+    });
+//]]></script> 
+<!--dtl:js_on_document_complete-->     
+
+<!-- dtl:block:FieldEdit -->
+
+<!-- dtl:block:OverviewFields -->
+	    <div class="Header">
+		<h2>$Text{"Fields"}:</h2>
+	    </div>
+	    <div class="Content">
+	    
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th class="Center">$Text{"ID"}</th>
+			    <th class="W20pc">$Text{"Name"}</th>
+			    <th class="W20pc">$Text{"Type"}</th>
+			    <th class="Center">$Text{"Position"}</th>
+			    <th class="Center">$Text{"Required"}</th>
+			    <th class="Center">$Text{"Valid"}</th>
+			</tr>
+		    </thead>
+		    <tbody>
+<!-- dtl:block:OverviewFieldList -->
+			<tr>
+			    <td class="Center">$QData{"FieldID"}</td>
+			    <td>
+				<a href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=$QData{"FieldTreeID"}&FieldID=$QData{"FieldID"}">
+				    $QData{"Name"}
+				</a>
+			    </td>
+			    <td>
+				<a href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=$QData{"FieldTreeID"}&FieldID=$QData{"FieldID"}">
+				     $QData{"FieldType"}
+				</a>
+			    </td>
+			    <td class="Center">
+				<a href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=$QData{"FieldTreeID"}&FieldID=$QData{"FieldID"}">
+				    $QData{"Position"}
+				</a>
+			    </td>
+			    <td class="Center">
+				<a href="$Env{"Baselink"}Action=$Env{"Action"}&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=$QData{"FieldTreeID"}&FieldID=$QData{"FieldID"}">
+				    $QData{"Required"}
+				</a>
+			    </td>
+			    <td class="Center">$Text{"$QData{"Valid"}"}</td>
+			</tr>
+<!-- dtl:block:OverviewFieldList -->
+		    </tbody>
+		</table>
+		<div class="Field SpacingTop">
+		    <form action="$Env{"CGIHandle"}" method="get">
+			    <input type="hidden" name="Action" value="$Env{"Action"}">
+			    <input type="hidden" name="Subaction" value="ItemEdit">
+			    <input type="hidden" name="SubFieldaction" value="FieldEdit">
+			    <input type="hidden" name="ItemID" value="$QData{"ItemID"}">
+			    <input type="hidden" name="FieldID" value="NEW">
+			    <button class="Primary" type="submit" id="AddNewChildNode" value="$Text{"Add new field/rule"}">$Text{"Add new field/rule"}</button>
+		    </form>
+		</div>
+	    </div>
+<!-- dtl:block:OverviewFields -->
+<!-- dtl:block:OverviewXML -->
+<!-- dtl:block:OverviewXMLFieldList -->
+<!-- dtl:block:OverviewXMLFieldList -->
+<!-- dtl:block:OverviewXML -->
+<!-- dtl:block:ItemEdit -->
+	</div>
+    </div>
+    <div class="Clear"></div>
+</div>
+<!-- dtl:block:Overview -->

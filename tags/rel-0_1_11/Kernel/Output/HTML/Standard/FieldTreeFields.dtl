@@ -1,0 +1,90 @@
+Content-Type: text/html; charset=$Env{"UserCharset"};
+
+<!-- dtl:block:LoadValidator -->
+<input type="hidden" name="FieldsLoadedCorrectly" value="1" />
+<!-- dtl:block:LoadValidator -->
+<!-- dtl:block:EmptyList -->
+	<div class="empty-list">&#352;ioje kategorijoje n&#279;ra element&#371;.</div>
+	<input type="hidden" name="NoFieldsLaoded" value="0" />
+<!-- dtl:block:EmptyList -->
+<!-- dtl:block:Field -->
+	<dl>
+		<dt class="$Data{"FieldClass"}" title="$QData{"Comment"}"><label for="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}">$QData{"FriendlyName"}:</label></dt>
+<!-- dtl:block:TextEnabled -->
+		<dd><input type="text" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="$QData{"Value"}" class="$QData{"RequiredCssClass"}" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" $QData{"Disabled"} /></dd>
+<!-- dtl:block:TextEnabled -->
+<!-- dtl:block:TextDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:TextDisabled -->
+<!-- dtl:block:PhoneEnabled -->
+		<dd><input type="text" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="$QData{"Value"}" class="$QData{"RequiredCssClass"} Validate_Phone" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}"  $QData{"Disabled"} /></dd>
+<!-- dtl:block:PhoneEnabled -->
+<!-- dtl:block:PhoneDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:PhoneDisabled -->
+<!-- dtl:block:MoneyEnabled -->
+		<dd><input type="text" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="$QData{"Value"}"  class="$QData{"RequiredCssClass"} Validate_Money" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" $QData{"Disabled"} /></dd>
+<!-- dtl:block:MoneyEnabled -->
+<!-- dtl:block:MoneyDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:MoneyDisabled -->
+<!-- dtl:block:IntegerEnabled -->
+		<dd><input type="text" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="$QData{"Value"}"  class="$QData{"RequiredCssClass"} Validate_Number" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" $QData{"Disabled"} /></dd>
+<!-- dtl:block:IntegerEnabled -->
+<!-- dtl:block:IntegerDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:IntegerDisabled -->
+<!-- dtl:block:DoubleEnabled -->
+		<dd><input type="text" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="$QData{"Value"}" class="$QData{"RequiredCssClass"} Validate_Number" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" $QData{"Disabled"} /></dd>
+<!-- dtl:block:DoubleEnabled -->
+<!-- dtl:block:DoubleDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:DoubleDisabled -->
+<!-- dtl:block:Boolean -->
+		<dd><input type="checkbox" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="1" $QData{"CheckedStr"} class="$QData{"RequiredCssClass"}" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" $QData{"Disabled"} /></dd>
+<!-- dtl:block:Boolean -->
+<!-- dtl:block:MultiTextEnabled -->
+		<dd><textarea name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" class="$QData{"RequiredCssClass"}" $QData{"Disabled"}>$QData{"Value"}</textarea></dd>
+<!-- dtl:block:MultiTextEnabled -->
+<!-- dtl:block:MultiTextDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:MultiTextDisabled -->
+<!-- dtl:block:DateTime -->
+		<dd>$Data{"DataValue"}</dd>
+<!-- dtl:block:DateTime -->
+<!-- dtl:block:Select -->
+		<dd>$Data{"SelectedStr"}</dd>
+<!-- dtl:block:Select -->
+<!-- dtl:block:EMailEnabled -->
+		<dd><input type="text" name="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}" value="$QData{"Value"}" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}"  class="$QData{"RequiredCssClass"} Validate_Email"  $QData{"Disabled"} /></dd>
+<!-- dtl:block:EMailEnabled -->
+<!-- dtl:block:EMailDisabled -->
+		<dd>$QData{"Value"}</dd>
+<!-- dtl:block:EMailDisabled -->
+<!-- dtl:block:RuleEscalateTo -->
+		<dd>$Data{"QueueName"}
+			<script type="text/javascript">
+				var nodes = document.getElementById('QueueID');
+				if (nodes) {
+					nodes = nodes.childNodes
+					var i;
+					for (i=0; i<nodes.length; i++) {
+						  var o = nodes.item(i);
+					      if(o.value == '$Data{"Template"}') {
+					      	o.selected = true;
+					      }
+					}
+				}
+			</script>
+		</dd>
+<!-- dtl:block:RuleEscalateTo -->
+<!-- dtl:block:UserInfoFetcherEnabled -->
+        <dd>
+# getExtUserInfo funkcija randasi FieldTree.dtl template
+            <button type="button" onclick="getExtUserInfo('$Data{"Template"}')">$Text{"Get additional user info"}</button>
+        </dd>
+<!-- dtl:block:UserInfoFetcherEnabled -->
+
+	</dl>
+	<div class="TooltipErrorMessage" id="$QData{"FieldPrefix"}_Field_$QData{"FieldID"}Error">This field is required.</div>
+<!-- dtl:block:Field -->

@@ -1,0 +1,41 @@
+Content-Type: text/html; charset=[% Env("UserCharset") %];
+
+<dtl set [% Env("Box0") %] = "[ ">
+<dtl set [% Env("Box1") %] = " ]">
+[% RenderBlockStart("Field") %]
+    <dl>
+        <dt class="[% Data.FieldClass %]">[% Data.Name | html %]:</dt>
+[% RenderBlockStart("Text") %]
+		<dd><input type="text" name="Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %]"  /></dd>
+[% RenderBlockEnd("Text") %]
+[% RenderBlockStart("Phone") %]
+		<dd><input type="text" name="Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] validate-number"  /></dd>
+[% RenderBlockEnd("Phone") %]
+[% RenderBlockStart("Money") %]
+		<dd><input type="text" name="Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]"  class="[% Data.RequiredCssClass | html %] validate-number" /></dd>
+[% RenderBlockEnd("Money") %]
+[% RenderBlockStart("Integer") %]
+		<dd>[% Translate("Number From") | html %]: <input type="text" name="Field_[% Data.FieldID | html %]From" value="[% Data.ValueFrom | html %]"  class="[% Data.RequiredCssClass | html %] validate-number" />
+		[% Translate("Number To") | html %]: <input type="text" name="Field_[% Data.FieldID | html %]To" value="[% Data.ValueTo | html %]"  class="[% Data.RequiredCssClass | html %] validate-number" />
+[% RenderBlockEnd("Integer") %]
+[% RenderBlockStart("Double") %]
+		<dd><input type="text" name="Field_[% Data.FieldID | html %]From" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] validate-number"  />
+		<input type="text" name="Field_[% Data.FieldID | html %]To" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] validate-number"  /></dd>
+[% RenderBlockEnd("Double") %]
+[% RenderBlockStart("Boolean") %]
+		<dd><input type="checkbox" name="Field_[% Data.FieldID | html %]" value="1" [% Data.CheckedStr | html %] class="[% Data.RequiredCssClass | html %]"  /></dd>
+[% RenderBlockEnd("Boolean") %]
+[% RenderBlockStart("MultiText") %]
+		<dd><textarea name="Field_[% Data.FieldID | html %]" class="[% Data.RequiredCssClass | html %]" >[% Data.Value | html %]</textarea></dd>
+[% RenderBlockEnd("MultiText") %]
+[% RenderBlockStart("DateTime") %]
+		<dd>[% Data.DataValue %]</dd>
+[% RenderBlockEnd("DateTime") %]
+[% RenderBlockStart("Select") %]
+		<dd>[% Data.SelectedStr %]</dd>
+[% RenderBlockEnd("Select") %]
+[% RenderBlockStart("EMail") %]
+		<dd><input type="text" name="Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]"  class="[% Data.RequiredCssClass | html %] validate-email" /></dd>
+[% RenderBlockEnd("EMail") %]
+</dl>
+[% RenderBlockEnd("Field") %]

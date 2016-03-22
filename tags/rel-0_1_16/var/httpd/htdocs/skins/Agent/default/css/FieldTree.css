@@ -1,0 +1,97 @@
+
+
+.FieldTreeHolder {
+	border-bottom: 1px solid #ddd;
+	border-top: 1px solid #ddd;	
+	margin: 20px 0px 20px 26px;
+	display: none;
+}
+
+.FieldTreeHolderItem {
+	padding: 6px !important;
+}
+ 
+.FieldTreeHolder div {
+	padding: 10px 0px 10px 0px;
+}
+
+.FieldTreeHolder div dl {
+	clear: both;
+	padding-bottom: 4px;
+	display: inline-block;
+	float: left;
+	font-size: 11px;
+}
+
+.FieldTreeHolder-Level2 {
+    display: none;
+}
+
+.FieldTreeHolder-Level3 {
+    display: none;
+}
+
+.FieldTreeHolder div dl dt {
+	background: #eee;
+	float: left;
+	line-height: 16px;
+	clear: both;
+	width: 230px;
+	text-align: right;
+	background: -moz-linear-gradient(center top , #F9F9F9, #ECEEEE) repeat scroll 0 0 transparent;
+    border-bottom: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-top: 1px solid #FFFFFF;
+    color: #333333;
+    font-size: 11px;
+    margin: -1px 6px 0 0;
+    padding: 4px 9px 3px 4px;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.FieldTreeHolder div dl dd {
+	float: left;
+	margin-left: 4px;
+	padding-top: 1px;
+} 
+
+.FieldTreeHolder div dl dd textarea {
+	width: 400px;
+	height: 150px;
+}
+
+ul.FieldTree.ErrorNotSelected {
+	border: 1px solid #FF505E;
+}
+ul.FieldTree a {
+	cursor: pointer;
+}
+
+ul.FieldTreeForm { 
+    border: 1px solid transparent;
+}
+
+ul.FieldTree.ErrorNotSelected {
+    border: 1px solid #FF505E;
+}
+
+ul.FieldTree > .error {
+    visibility: hidden;
+    padding: 6px 0px;
+    display: block
+}
+
+ul.FieldTree.ErrorNotSelected > .error {
+    visibility: visible;
+}
+
+.ForDynamicLoad div {
+	padding: 0px;
+}
+
+ul .EmptyBranch {
+	font-family: Arial;
+	color: #821212;
+	padding: 15px 0px;
+	text-indent: 15px;
+}

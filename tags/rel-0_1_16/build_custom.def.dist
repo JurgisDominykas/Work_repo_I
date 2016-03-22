@@ -1,0 +1,7 @@
+# DEFINITIONS (change to your liking)
+LOCALOTRS=/opt/otrs3
+REMOTESRV=muiline.com
+REMOTEOTRS=/opt/otrs-vanilla
+REMOTEUSR=skirsdeda
+# remote otrs package repository (relative to user home directory)
+REMOTEPKGREPO=/home/skirsdeda/public_html/software/otrs-packages-repo

@@ -1,0 +1,7 @@
+# DEFINITIONS (change to your liking)
+LOCALOTRS=/opt/otrs3
+REMOTESRV=scm
+REMOTEOTRS=/opt/otrs
+REMOTEUSR=aks
+# remote otrs package repository (relative to user home directory)
+REMOTEPKGREPO=/home/aks/otrs-repos/614dda2d-8b9e-453b-9e2f-efa771bdb171

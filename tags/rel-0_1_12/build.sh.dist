@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# DEFINITIONS (change to your liking)
+LOCALOTRS=/opt/otrs3
+REMOTESRV=muiline.com
+REMOTEOTRS=/opt/otrs-vanilla
+REMOTEUSR=skirsdeda
+# remote otrs package repository (relative to user home directory)
+REMOTEPKGREPO=/home/skirsdeda/public_html/software/otrs-packages-repo
+
+fab -H $REMOTESRV -f ../../../deploy-tools/otrs_pack_fab.py -u $REMOTEUSR --set otrs_path=$LOCALOTRS,remote_otrs_path=$REMOTEOTRS,remote_repo_path=$REMOTEPKGREPO $@

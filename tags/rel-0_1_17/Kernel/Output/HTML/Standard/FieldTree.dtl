@@ -1,0 +1,165 @@
+# --
+# FieldTree.dtl - provides FieldTree component
+# Copyright (C) 2001-2009 OTRS AG, http://otrs.org/
+# --
+# $Id: FieldTree.dtl,v 0.01 2009/11/23 Justinas Jaronis Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+
+# --
+# FieldTree.dtl - provides FieldTree component
+# Copyright (C) 2001-2009 OTRS AG, http://otrs.org/
+# --
+# $Id: FieldTree.dtl,v 0.01 2009/11/23 Justinas Jaronis Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+<style>
+	.tafelTree_root table , 	.tafelTree_root * table, .tafelTree_root table tr td, 	.tafelTree_root * table tr td   {
+		border-collapse: collapse !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	#fieldsContainer dl {
+		clear: both;
+	}
+	#fieldsContainer dl dt, #fieldsContainer dl dd  {
+		float: left;
+		margin: 0;
+		padding: 5px;
+	}
+	
+	#fieldsContainer dl dd input[type=text],	#fieldsContainer dl dd textarea  {
+		width: 220px;
+	}
+	#fieldsContainer dl dt {
+		width: 200px;
+	}
+	
+	#fieldsContainer dl dd textarea  {
+		height: 80px;
+	}
+	
+	#fieldsContainer dl dt.full  {
+		width: 100%;
+	}
+	
+		</style>
+
+		<script type="text/javascript">
+			var tree = null;
+			function TafelTreeInit () {
+				var struct = $Data{"ProblemTypeJSON"};
+				function loadFieldSet(id)
+				{
+					new Ajax.Updater({ success: 'fieldsContainer', failure: 'fieldsContainer'}, '$Env{"CGIHandle"}', {
+					  evalScripts: true,
+					  parameters: { Disabled: "$Data{"DisabledFieldTree"}", Action: "AgentFieldTree", Subaction: "AjaxFields", ValueSetID: "$Data{"ProblemDescriptionFieldsetID"}", ItemID: id $Data{"ProblemTypeData"} },
+					  onComplete: function() {
+					      document.fire('fieldtreefieldset:load');
+					  }
+					});
+				}
+				
+				tree = new TafelTree('problemTypeTree', struct, {
+					'generate' : true,
+					'radios' : "ProblemTypeID",
+					'radiosDisabled' : "$Data{"DisabledFieldTree"}",
+					'selectedRadioID' : "$Data{"ProblemTypeID"}",
+					'imgBase' : '$Config{"Frontend::WebPath"}images/AKS/treeview/',
+					'defaultImg' : 'page.gif',
+					'cookies' : false,
+					'defaultImgOpen' : 'folderopen.gif',
+					'defaultImgClose' : 'folder.gif',
+					'onRadio' : function(obj, ev, x) {					    
+						loadFieldSet(obj.getId());				
+						
+						// ištraukiam problemos tipo pilną pavadinimą
+						var txt = '';
+						var obj_parents = obj.getParents();
+						for (var i = 0; i < obj_parents.length; i++)
+							txt = obj_parents[i].getText() + ' - ' + txt;
+						txt += obj.getText();						
+						if (Object.isElement(document.getElementById('ProblemTypeText'))) 
+							document.getElementById('ProblemTypeText').innerHTML = txt;
+							 
+						if (mainVal)
+							mainVal.validate();						
+					},
+					'onLoad' : function() {
+						document.fire('fieldtree:load');
+					}
+				});
+				var selectedRadioID = "$Data{"ProblemTypeID"}";
+/*
+<!-- dtl:block:AssignedProblemTypeFieldSet -->
+*/
+				if (selectedRadioID)
+					loadFieldSet(selectedRadioID);
+/*
+<!-- dtl:block:AssignedProblemTypeFieldSet -->
+*/
+				TafelTreeInit2();
+			}
+			
+			function getExtUserInfo(targetFieldIDs)
+            {
+                if (!$('AccountNumber'))
+                    return;
+                var accountNumber = $('AccountNumber').getValue();
+                var url = '$Env{"CGIHandle"}';
+                var pars= 'Action=AgentFieldTree&Subaction=AjaxClientInfoExtended&AccountNumber='+accountNumber;
+                var myAjax = new Ajax.Request(
+                    url, 
+                    {
+                        method: 'post', 
+                        parameters: pars, 
+                        evalJS: false,
+                        onComplete: function(req) {
+                            var values = req.responseText.evalJSON();
+                            var valuesArray = new Array();
+                            valuesArray[0] = values.CellularAccountNumber || '';
+                            valuesArray[1] = values.StreetName || '';
+                            valuesArray[2] = values.PlaceName || '';
+                            valuesArray[3] = values.AreaName || '';
+                            valuesArray[4] = values.CountryName || '';
+                            var fieldIDs = targetFieldIDs.split(';');
+                            for (i=0; i<fieldIDs.length; i++) {
+                                fieldID = fieldIDs[i];
+                                $$('[name=Field_'+fieldID+']').each(function(o) {
+                                    o.setValue(valuesArray[i]);
+                                });
+                            }
+                        }
+                    });
+                return false;
+            }
+
+		</script>
+		<div style="float: left; width: 330px;">
+<!-- dtl:block:FieldTreeExpandButton -->
+		<button id="ShowFieldTree" type="button"><img src="/otrs-web/images/AKS/treeview/plus0.gif" style="vertical-align:top;">
+		<span id="ProblemTypeText">
+<!-- dtl:block:RecursiveProblemTypeName -->		 
+		    $Data{"RecursiveProblemType"}
+<!-- dtl:block:RecursiveProblemTypeName -->
+		</span>
+		</button>
+<!-- dtl:block:FieldTreeExpandButton -->
+		<div id="FieldTreeDiv" class="FieldTreeDiv">
+			<div id="problemTypeTree"></div>
+<!-- dtl:block:FieldTreeCondenseButton -->
+            <button id="HideFieldTree" type="button">$Text{"Hide"}</button>
+<!-- dtl:block:FieldTreeCondenseButton --> 
+		</div>
+		</div>
+		<input type="hidden" name="ProblemTypeValueSetID" value="$Data{"ProblemDescriptionFieldsetID"}">
+		<div style="float: left; width: 460px;" id="fieldsContainer"><!--W3c--></div>
+		<div style="clear: both;"><!--W3c--></div>

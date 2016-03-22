@@ -1,0 +1,525 @@
+# --
+# AdminFieldTree.tt - provides HTML form for FieldTree administration
+# Copyright (C) 2010-2012 Atviro kodo sprendimai, http://aksprendimai.lt/
+# --
+# $Id: AdminFieldTree.dtl,v 1.7 2009/05/18 09:40:47 mh Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+[% RenderBlockStart("Overview") %]
+<div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
+    <h1>[% Translate("Field Tree Management") | html %]</h1>
+    
+    <div class="Clear"></div>
+    
+    <div class="SidebarColumn">
+	<div class="WidgetSimple">
+	    <div class="Header">
+		<h2>[% Translate("Actions") | html %]</h2>
+	    </div>
+	    <div class="Content">
+		<ul class="ActionList">
+		    <li>
+			    <form action="[% Env("CGIHandle") %]" method="get">
+		            <input type="hidden" name="Action" value="[% Env("Action") %]">
+		            <input type="hidden" name="Subaction" value="ItemEdit">
+		            <input type="hidden" name="ItemID" value="NEW">
+		            
+		            <div>[% Data.ClassOptionStrg %]</div>
+		            <button class="CallForAction Plus" type="submit" value="[% Translate("Add") | html %]">
+		        	<span>[% Translate("Add Field Tree Item") | html %]</span>
+		    	    </button>
+		    	</form>
+		    </li>
+		    <li>
+			    <form action="[% Env("CGIHandle") %]" method="get">
+		            <input type="hidden" name="Action" value="[% Env("Action") %]">
+		            <input type="hidden" name="Subaction" value="ItemEdit">
+		            <input type="hidden" name="ItemID" value="NEW">
+		            <input type="hidden" name="Class" value="NEW">
+		            
+		            <button class="CallForAction Plus" type="submit" value="[% Translate("Add") | html %]">
+		        	<span>[% Translate("Add a new FieldTree Class.") | html %]</span>
+		            </button>
+		        </form>
+		    </li>
+		</ul>
+	    </div>
+	</div>
+    </div>
+    
+    <div class="ContentColumn">
+	<div class="WidgetSimple">
+[% RenderBlockStart("OverviewClass") %]
+	    <div class="Header">
+		<h2>[% Translate("List") | html %]</h2>
+	    </div>
+	    <div class="Content">
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th>[% Translate("Field Tree Class") | html %]</th>
+			</tr>
+		    </thead>
+		    <tbody>
+[% RenderBlockStart("OverviewClassList") %]
+			<tr>
+			    <td>
+				<a class="AsBlock" href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemList&Class=[% Data.Class | uri %]">
+				[% Data.Class | html %]
+				</a>
+			    </td>
+			</tr>
+[% RenderBlockEnd("OverviewClassList") %]
+		    </tbody>
+		</table>
+	    </div>
+[% RenderBlockEnd("OverviewClass") %]
+
+[% RenderBlockStart("OverviewItem") %]
+	    <div class="Header">
+		<h2>[% Translate("List") | html %]</h2>
+	    </div>
+	    <div class="Content">
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th class="Center">[% Translate("ID") | html %]</th>
+			    <th class="W40pc">[% Translate("Name") | html %]</th>
+			    <th class="Center">[% Translate("ParentID") | html %]</th>
+			    <th class="Center">[% Translate("Valid") | html %]</th>
+			</tr>
+		    </thead>
+		    <tbody>
+[% RenderBlockStart("OverviewItemList") %]
+			<tr>
+			    <td class="Center">[% Data.ItemID | html %]</td>
+			    <td>
+				<a href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemEdit&ItemID=[% Data.ItemID | html %]">
+		                  [% Data.Name | html %]
+		                </a>
+		            </td>
+		            <td class="Center">[% Data.ParentID | html %]</td>
+		            <td class="Center">[% Translate(Data.Valid) | html %]</td>
+		        </tr>
+[% RenderBlockEnd("OverviewItemList") %]
+		    </tbody>
+		</table>
+	    </div>
+[% RenderBlockEnd("OverviewItem") %]
+
+[% RenderBlockStart("ItemEdit") %]
+	    <div class="Header">
+		<h2>[% Translate("Item") | html %] [% Translate("Edit") | html %]:</h2>
+	    </div>
+	    <div class="Content">
+		<form action="[% Env("CGIHandle") %]" method="get" class="Validate">
+		    <input type="hidden" name="Action" value="[% Env("Action") %]">
+		    <input type="hidden" name="Subaction" value="ItemSave">
+		    <input type="hidden" name="ItemID" value="[% Data.ItemID | html %]">
+		    <fieldset class="TableLike">
+[% RenderBlockStart("ItemEditClassAdd") %]
+			<label class="Mandatory" for="ClassDsc"><span class="Marker">*</span>[% Translate("Field Tree Class") | html %]</label>
+			<div class="Field">
+			    <input type="text" name="Class" id="ClassDsc" value="[% Data.Name | html %]" size="W50pc Validate_Required" maxlength="100" />
+			    <div id="ClassDscError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+			    <div id="ClassDscServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+			</div>
+			<div class="Clear"></div>
+[% RenderBlockEnd("ItemEditClassAdd") %]
+[% RenderBlockStart("ItemEditClassExist") %]
+			<label>[% Translate("Field Tree Class") | html %]: </label>
+			<div class="Field">
+			    [% Data.Class | html %]
+			    <input type="hidden" name="Class" value="[% Data.Class | html %]">
+			</div>
+			<div class="Clear"></div>
+[% RenderBlockEnd("ItemEditClassExist") %]
+			<label class="Mandatory" for="Name"><span class="Marker">*</span>[% Translate("Name") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Name" id="Name" value="[% Data.Name | html %]" class="W50pc Validate_Required" maxlength="255"/>
+			    <div id="NameError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+			    <div id="NameServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FriendlyName">[% Translate("Friendly Name") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="FriendlyName" id="FriendlyName" value="[% Data.FriendlyName | html %]" class="W50pc" maxlength="1000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="CssClass">[% Translate("Css Class") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="CssClass" id="CssClass" value="[% Data.CssClass | html %]" class="W50pc" maxlength="30"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="ParentID">[% Translate("ParentID") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="ParentID" id="ParentID" value="[% Data.ParentID | html %]" class="W50pc Validate_PositiveNegativeNumbers" maxlength="45" readonly/>
+			    <div id="ParentIDError" class="TooltipErrorMessage"><p>[% Translate("This field must be numeric.") | html %]</p></div>
+			    <div id="ParentIDServerError" class="TooltipErrorMessage"><p>[% Translate("This must be a valid Field Tree branch ID or -1.") | html %]</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FPosition">[% Translate("Position") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Position" id="FPosition" value="[% Data.Position | html %]" class="W50pc Validate_Number" maxlength="100"/>
+			    <div id="FPositionError" class="TooltipErrorMessage"><p>[% Translate("This field must be numeric.") | html %]</p></div>
+			    <div id="FPositionServerError" class="TooltipErrorMessage"><p>[% Translate("This field must be numeric.") | html %]</p></div>
+			</div>
+						
+						
+						
+						
+			<label for="ValidID">[% Translate("Valid") | html %]: </label>
+			<div class="Field">
+			    [% Data.ValidOptionStrg %]
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="Comment">[% Translate("Comment") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Comment" id="Comment" value="[% Data.Comment | html %]" class="W50pc" maxlength="2000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<div class="Field SpacingTop">
+			    <button class="Primary" type="submit" id="Submit" value="[% Translate("Submit") | html %]">[% Translate("Submit") | html %]</button>
+			    [% Translate("or") | html %]
+			    <a href="[% Env("Baselink") %]Action=[% Env("Action") %]">[% Translate("Cancel") | html %]</a>
+			</div>
+			<div class="Clear"></div>
+			
+		    </fieldset>
+		</form>
+	    </div>
+
+[% RenderBlockStart("OverviewChildItems") %]
+	    <div class="Header">
+		<h2>[% Translate("Child nodes") | html %]:</h2>
+	    </div>
+	    <div class="Content">
+	    
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th class="Center">[% Translate("ID") | html %]</th>
+			    <th class="W60pc">[% Translate("Name") | html %]</th>
+			    <th class="Center">[% Translate("Valid") | html %]</th>
+			</tr>
+		    </thead>
+		    <tbody>
+[% RenderBlockStart("OverviewChildItemList") %]
+			<tr>
+			    <td class="Center">[% Data.ItemID | html %]</td>
+			    <td>
+				<a href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemEdit&ItemID=[% Data.ItemID | html %]">
+				    [% Data.Name | html %]
+				</a>
+			    </td>
+			    <td class="Center">[% Translate(Data.Valid) | html %]</td>
+			</tr>
+[% RenderBlockEnd("OverviewChildItemList") %]
+		    </tbody>
+		</table>
+		<div class="Field SpacingTop">
+		    <form action="[% Env("CGIHandle") %]" method="get">
+			    <input type="hidden" name="Action" value="[% Env("Action") %]">
+			    <input type="hidden" name="Subaction" value="ItemEdit">
+			    <input type="hidden" name="ItemID" value="NEW">
+			    <input type="hidden" name="Class" value="[% Data.Class | html %]">
+			    <input type="hidden" name="ParentID" value="[% Data.ItemID | html %]">
+			    <button class="Primary" type="submit" id="AddNewChildNode" value="[% Translate("Add new child node") | html %]">[% Translate("Add new child node") | html %]</button>
+		    </form>
+		</div>
+	    </div>
+[% RenderBlockEnd("OverviewChildItems") %]
+
+[% RenderBlockStart("FieldEdit") %]
+	    <div class="Header">
+		<h2>[% Translate("Field") | html %] [% Translate("Edit") | html %]</h2>
+	    </div>
+	    <div class="Content">
+		<div class="hidden-templates" style="display: none;">
+		    <span id="TemplateCaption_Default">[% Translate("Template") | html %]:</span><div id="Template_Default"><input type="text" name="Template" value="[% Data.Template | html %]" size="45" maxlength="100"></div>
+		    <span id="TemplateCaption_Select">[% Translate("General Catalog class") | html %]:</span><div id="Template_Select">[% Data.ClassOptionStrg %]</div>
+		    <span id="TemplateCaption_RuleEscalateTo">[% Translate("Queue") | html %]:</span><div id="Template_RuleEscalateTo">[% Data.QueueStr %]</div>
+            <span id="TemplateCaption_RuleRedmineProjectID">[% Translate("Redmine project id") | html %]:</span><div id="Template_RuleRedmineProjectID"><input type="text" name="Template" class="Validate_Number" value="[% Data.Template | html %]" size="45" maxlength="100"></div>
+            <span id="TemplateCaption_RuleComment">[% Translate("Comment template") | html %]:</span><div id="Template_RuleComment"><textarea name="Template" style="width: 500px; height: 200px;">[% Data.Template %]</textarea>
+			<h3>Possible tags:</h3>
+			<dl>
+			    <dt>OTRS_TREE_&lt;FieldID&gt;</dt>
+			    <dd>Field from field tree value</dd>
+			    <dt>OTRS_TICKET_ID</dt>
+			    <dd>Ticket ID</dd>
+			    <dt>OTRS_TICKET_NUMBER</dt>
+			    <dd>Ticket number</dd>
+			    <dt>OTRS_QUEUE</dt>
+			    <dd>Ticket Queue</dd>
+			    <dt>OTRS_FIRST_NAME</dt>
+			    <dd>First name of person, creating a ticket</dd>
+			    <dt>OTRS_LAST_NAME</dt>
+			    <dd>Last name of person, creating a ticket</dd>
+			    <dt>OTRS_TICKET_*</dt>
+			    <dd>All ticket properties (Those properties are: N&#47;A)</dd>
+			    <dt>OTRS_CURRENT_*</dt>
+			    <dd>All current user properties (Those are: UserFirstname UserLastname UserLogin UserEmail ValidID)</dd>
+			    <dt>OTRS_CONFIG_*</dt>
+			    <dd>All config settings (For advanced users)</dd>
+			</dl>
+		    </div>
+		    <span id="TemplateCaption_UserInfoFetcher">[% Translate("Target fields") | html %]:</span><div id="Template_UserInfoFetcher">
+			 <table>
+			    <tr><td style="width: 180px"><label for="Template_UIF_1">[% Translate("Cellular account number field ID") | html %]: </label></td><td><input type="text" name="Template_UIF_CellularAccountNo" id="Template_UIF_1"/></td></tr>
+			    <tr><td><label for="Template_UIF_2">[% Translate("Street name field ID") | html %]: </label></td><td><input type="text" name="Template_UIF_StreetName" id="Template_UIF_2"/></td></tr>
+			    <tr><td><label for="Template_UIF_3">[% Translate("Place name field ID") | html %]: </label></td><td><input type="text" name="Template_UIF_PlaceName" id="Template_UIF_3"/></td></tr>
+			    <tr><td><label for="Template_UIF_4">[% Translate("Area name field ID") | html %]: </label></td><td><input type="text" name="Template_UIF_AreaName" id="Template_UIF_4"/></td></tr>
+			    <tr><td><label for="Template_UIF_5">[% Translate("Country name field ID") | html %]: </label></td><td><input type="text" name="Template_UIF_CountryName" id="Template_UIF_5"/></td></tr>
+			</table>
+		    </div>
+		</div>
+		<form action="[% Env("CGIHandle") %]" method="get" id="FieldEditForm">
+		    <input type="hidden" name="Action" value="[% Env("Action") %]">
+		    <input type="hidden" name="Subaction" value="FieldSave">
+		    <input type="hidden" name="ItemID" value="[% Data.FieldTreeID | html %]">
+		    <input type="hidden" name="FieldID" value="[% Data.FieldID | html %]">
+		    <fieldset class="TableLike">
+			<label class="Mandatory" for="FName"><span class="Marker">*</span>[% Translate("Name") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Name" id="FName" value="[% Data.Name | html %]" class="W50pc Validate_Required" maxlength="255"/>
+			    <div id="FNameError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+			    <div id="FNameServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+[% RenderBlockStart("FieldDetailsGeneral") %]
+			<label for="FFriendlyName">[% Translate("Friendly Name") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="FriendlyName" id="FFriendlyName" value="[% Data.FriendlyName | html %]" class="W50pc" maxlength="1000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FieldType">[% Translate("Field Type") | html %]: </label>
+			<div class="Field">
+			    [% Data.FieldTypesStr %]
+			</div>
+			<div class="Clear"></div>
+			
+# FIXME: Kodel [% Data.Checked | html %]? WTF, gal bet "RequiredChecked" reiktu uzvadint?
+			<label for="FRequired">[% Translate("Required") | html %]: </label>
+			<div class="Field">
+			    <input type="checkbox" value="1" name="Required" id="FRequired" [% Data.Checked | html %]>
+			</div>
+			<div class="Clear"></div>
+			
+# FIXME: Kodel Nera "checked" nustatymo (nusimusa redaguojant?)
+			<label for="FHidden">[% Translate("Hidden") | html %]: </label>
+			<div class="Field">
+			    <input type="checkbox" value="1" name="Hidden" id="FHidden">
+			</div>
+			<div class="Clear"></div>
+			<label style="display: none;" for="Template_Selected">[% Translate("Information") | html %]: </label>
+            <div style="display: none;" class="Field">
+            
+[% InsertTemplate("RichTextEditor.tt") %]
+                        <textarea id="Template_Selected" class="RichText [% Data.RichTextInvalid | html %]" name="Template_Selected" title="Message body" rows="15" cols="[% Config("Ticket::Frontend::TextAreaNote") %]">[% Data.Template | html %]</textarea>
+                        <div id="Template_SelectedError" class="TooltipErrorMessage">
+                            <p>[% Translate("This field is required.") | html %]</p>
+                        </div>
+                        <div id="Template_SelectedServerError" class="TooltipErrorMessage">
+                            <p>[% Translate("This field is required.") | html %]</p>
+                        </div>
+                        
+            </div>
+            <div class="Clear"></div>
+			
+			<label for="FTemplate" id="TemplateCaptionContainer">[% Translate("Template") | html %]: </label>
+			
+			<div class="Field"  id="TemplateContainer">
+			    <input type="text" name="Template" id="FTemplate" value="[% Data.Template | html %]" class="W50pc" maxlength="100"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FTarget">[% Translate("Target") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Target" id="FTarget" value="[% Data.Target | html %]" class="W50pc" maxlength="1000"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="FPosition">[% Translate("Position") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Position" id="FPosition" value="[% Data.Position | html %]" class="W50pc Validate_Number" maxlength="100"/>
+			    <div id="FPositionError" class="TooltipErrorMessage"><p>[% Translate("This field must be numeric.") | html %]</p></div>
+			    <div id="FPositionServerError" class="TooltipErrorMessage"><p>[% Translate("This field must be numeric.") | html %]</p></div>
+			</div>
+			<div class="Clear"></div>
+[% RenderBlockEnd("FieldDetailsGeneral") %]
+[% RenderBlockStart("FieldDetailsTemplates") %]
+			<label for="FTemplateText">[% Translate("Template text") | html %]: </label>
+			<div class="Field">
+			    <input type="hidden" name="FieldType" value="Information">
+#FIXME: kodel name="Template"? Ar nesidubliuoja su auksciau esanciu
+			    <textarea name="Template" id="FTemplateText" cols="50" rows="10" class="W50pc">
+				[% Data.Template | html %]
+			    </textarea>
+			</div>
+			<div class="Clear"></div>
+[% RenderBlockEnd("FieldDetailsTemplates") %]
+			<label for="FFieldTreeID">[% Translate("FieldTreeID") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="FieldTreeID" id="FFieldTreeID" value="[% Data.FieldTreeID | html %]" class="W50pc Validate_Number" maxlength="100" readonly/>
+			    <div id="ParentIDError" class="TooltipErrorMessage"><p>[% Translate("This field must be numeric.") | html %]</p></div>
+			    <div id="ParentIDServerError" class="TooltipErrorMessage"><p>[% Translate("This must be a valid Field Tree branch ID.") | html %]</p></div>
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="ValidID">[% Translate("Valid") | html %]: </label>
+			<div class="Field">
+			    [% Data.ValidOptionStrg %]
+			</div>
+			<div class="Clear"></div>
+			
+			<label for="Comment">[% Translate("Comment") | html %]: </label>
+			<div class="Field">
+			    <input type="text" name="Comment" id="Comment" value="[% Data.Comment | html %]" class="W50pc" maxlength="200"/>
+			</div>
+			<div class="Clear"></div>
+			
+			<div class="Field SpacingTop">
+			    <button class="Primary" type="submit" id="Submit" value="[% Translate("Submit") | html %]">[% Translate("Submit") | html %]</button>
+			    [% Translate("or") | html %]
+			    <a href="[% Env("Baselink") %]Action=[% Env("Action") %]">[% Translate("Cancel") | html %]</a>
+			</div>
+			<div class="Clear"></div>
+		    </fieldset>
+		</form>
+	    </div>
+
+[% WRAPPER JSOnDocumentComplete %]
+<script type="text/javascript">//<![CDATA[
+    var selected = $('#FieldType').val();
+    
+    if(selected == 'Information')
+    {
+        $("#TemplateContainer").hide();
+        $("label[for=FTemplate]").hide();
+        $("#TemplateContainer > input").attr('name', 'Template_Selected');
+        $("#Template_Selected").attr('name', 'Template');
+        $("label[for=Template_Selected]").show();
+        $("#Template_Selected").parent().show();
+    }
+        
+    $('select#FieldType').bind('change', function(Event) {
+        var selected = $('#FieldType').val();
+        
+        if(selected == 'Information')
+        {
+            $("#TemplateContainer").hide();
+            $("label[for=FTemplate]").hide();
+            $("#TemplateContainer > input").attr('name', 'Template_Selected');
+            $("#Template_Selected").attr('name', 'Template');
+            $("label[for=Template_Selected]").show();
+            $("#Template_Selected").parent().show();
+        }
+        else
+        {
+            $("label[for=Template_Selected]").hide();
+            $("#Template_Selected").parent().hide();
+            
+            $("#TemplateContainer").show();
+            $("label[for=FTemplate]").show();
+            $("#TemplateContainer > input").attr('name', 'Template');
+            $("#Template_Selected").attr('name', 'Template_Selected');
+            
+            var template = $('#Template_'+selected);
+            var html, caption;
+            if (template.length) {
+                html = template.html();
+                caption = $('#TemplateCaption_'+selected).html();
+            }
+            else {
+                html = $('#Template_Default').html();
+                caption = $('#TemplateCaption_Default').html();
+            }
+            $('#TemplateContainer').html(html);
+            $('#TemplateCaptionContainer').html(caption);
+        }
+    });
+//]]></script> 
+[% END %]     
+
+[% RenderBlockEnd("FieldEdit") %]
+
+[% RenderBlockStart("OverviewFields") %]
+	    <div class="Header">
+		<h2>[% Translate("Fields") | html %]:</h2>
+	    </div>
+	    <div class="Content">
+	    
+		<table class="DataTable">
+		    <thead>
+			<tr>
+			    <th class="Center">[% Translate("ID") | html %]</th>
+			    <th class="W20pc">[% Translate("Name") | html %]</th>
+			    <th class="W20pc">[% Translate("Type") | html %]</th>
+			    <th class="Center">[% Translate("Position") | html %]</th>
+			    <th class="Center">[% Translate("Required") | html %]</th>
+			    <th class="Center">[% Translate("Valid") | html %]</th>
+			</tr>
+		    </thead>
+		    <tbody>
+[% RenderBlockStart("OverviewFieldList") %]
+			<tr>
+			    <td class="Center">[% Data.FieldID | html %]</td>
+			    <td>
+				<a href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=[% Data.FieldTreeID | html %]&FieldID=[% Data.FieldID | html %]">
+				    [% Data.Name | html %]
+				</a>
+			    </td>
+			    <td>
+				<a href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=[% Data.FieldTreeID | html %]&FieldID=[% Data.FieldID | html %]">
+				     [% Data.FieldType | html %]
+				</a>
+			    </td>
+			    <td class="Center">
+				<a href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=[% Data.FieldTreeID | html %]&FieldID=[% Data.FieldID | html %]">
+				    [% Data.Position | html %]
+				</a>
+			    </td>
+			    <td class="Center">
+				<a href="[% Env("Baselink") %]Action=[% Env("Action") %]&Subaction=ItemEdit&SubFieldaction=FieldEdit&ItemID=[% Data.FieldTreeID | html %]&FieldID=[% Data.FieldID | html %]">
+				    [% Data.Required | html %]
+				</a>
+			    </td>
+			    <td class="Center">[% Translate(Data.Valid) | html %]</td>
+			</tr>
+[% RenderBlockEnd("OverviewFieldList") %]
+		    </tbody>
+		</table>
+		<div class="Field SpacingTop">
+		    <form action="[% Env("CGIHandle") %]" method="get">
+			    <input type="hidden" name="Action" value="[% Env("Action") %]">
+			    <input type="hidden" name="Subaction" value="ItemEdit">
+			    <input type="hidden" name="SubFieldaction" value="FieldEdit">
+			    <input type="hidden" name="ItemID" value="[% Data.ItemID | html %]">
+			    <input type="hidden" name="FieldID" value="NEW">
+			    <button class="Primary" type="submit" id="AddNewChildNode" value="[% Translate("Add new field/rule") | html %]">[% Translate("Add new field/rule") | html %]</button>
+		    </form>
+		</div>
+	    </div>
+[% RenderBlockEnd("OverviewFields") %]
+[% RenderBlockStart("OverviewXML") %]
+[% RenderBlockStart("OverviewXMLFieldList") %]
+[% RenderBlockEnd("OverviewXMLFieldList") %]
+[% RenderBlockEnd("OverviewXML") %]
+[% RenderBlockEnd("ItemEdit") %]
+	</div>
+    </div>
+    <div class="Clear"></div>
+</div>
+[% RenderBlockEnd("Overview") %]

@@ -1,0 +1,50 @@
+# --
+# FieldTree.dtl - provides FieldTree component
+# Copyright (C) 2001-2009 OTRS AG, http://otrs.org/
+# --
+# $Id: FieldTree.dtl,v 0.01 2009/11/23 Justinas Jaronis Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+
+# --
+# FieldTree.dtl - provides FieldTree component
+# Copyright (C) 2001-2009 OTRS AG, http://otrs.org/
+# --
+# $Id: FieldTree.dtl,v 0.01 2009/11/23 Justinas Jaronis Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+
+
+			<script type="text/javascript">
+			var tree2 = null;
+			function TafelTreeInit2 () {
+				var struct = $Data{"ProblemReasonJSON"};
+				tree2 = new TafelTree('problemSourceTree', struct, {
+					'generate' : true,
+					'checkboxes' : true,
+					'cookies' : false,
+					'checkboxNamePrefix':'ProblemReason_',
+					'checkboxesDisabled': '$Data{"DisabledReasonTree"}',
+					'imgBase' : '$Config{"Frontend::WebPath"}images/AKS/treeview/',
+					'defaultImg' : 'page.gif',
+					'defaultImgOpen' : 'folderopen.gif',
+					'defaultImgClose' : 'folder.gif',
+					'onLoad' : function() {
+						document.fire('fieldtree:load');
+					}
+				});
+			}
+
+			</script>
+		<div style="float: left; width: 380px;" >
+			<div id="problemSourceTree"></div> 
+		</div>
+		<input type="hidden" name="ProblemReasonValueSetID" value="$Data{"ProblemReasonFieldsetID"}">

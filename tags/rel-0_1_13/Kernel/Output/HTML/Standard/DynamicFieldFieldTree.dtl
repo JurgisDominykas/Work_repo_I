@@ -1,0 +1,33 @@
+<!-- dtl:block:FieldTree -->
+<ul class="FieldTree FieldTreeForm">
+	<input type="hidden" name="$Data{"FieldName"}_Selected" value="" class="Validate_Required" id="ProblemTypeIdError" />
+	<input type="hidden" name="$Data{"FieldName"}_FieldTreeID" id="$Data{"FieldName"}_ProblemTypeIDField" value="$QData{"FieldTreeID"}" />
+	<input type="hidden" name="$Data{"FieldName"}" class="FieldTreeName" value="$Data{"ValueSetID"}" />
+	<input type="hidden" name="$Data{"FieldName"}_ReadOnly" value="$Data{"ReadOnly"}" />
+	<span class="error">Privalote u&#382;pildyti vien&#261; i&#353; &#353;ak&#371;!</span>
+	<ul class="FieldTree">
+<!-- dtl:block:FieldTreeLevel1 -->
+		<li class="$QData{"CSSOpenClass"} FieldTreeItem"><a class="Level1Opener" rel="$QData{"id"}"><span>&#9656;</span>&nbsp;&nbsp;$Data{"txt"}</a></li>
+		<ul class="FieldTreeHolder-Level1 FieldTreeHolder" id="FieldTreeHolder-$QData{"id"}">
+<!-- dtl:block:FieldTreeLevel2 -->
+			<li class="$QData{"CSSOpenClass"} FieldTreeHolderItem"><a class="Level2Opener" rel="$QData{"id"}">&#8226;&nbsp;&nbsp;$Data{"txt"}</a></li>
+			<div class="FieldTreeHolder-Level2" id="FieldTreeHolder-$QData{"id"}"><!-- for dynamic load --></div>
+			<div style="clear:both;"></div>
+<!-- dtl:block:FieldTreeLevel2 -->
+		</ul>
+<!-- dtl:block:FieldTreeLevel1 -->
+	</ul>
+<!-- dtl:block:FieldTree -->
+<!-- dtl:block:FieldTreePreview -->
+<!-- dtl:block:FieldTreeRecursiveName -->
+<p>$Data{"ItemRecursiveName"}</p>
+<!-- dtl:block:FieldTreeRecursiveName -->
+<ul class="FieldTreeHolder FieldTreePreview">
+	<input type="hidden" name="$Data{"FieldName"}_Selected" value="" class="Validate_Required" id="ProblemTypeIdError" />
+	<input type="hidden" name="$Data{"FieldName"}_FieldTreeID" id="$Data{"FieldName"}_ProblemTypeIDField" value="$QData{"FieldTreeID"}" />
+	<input type="hidden" name="$Data{"FieldName"}" class="FieldTreeName" value="$Data{"ValueSetID"}" />
+	<input type="hidden" name="$Data{"FieldName"}_ReadOnly" value="$Data{"ReadOnly"}" />
+	<div class="FieldTreeHolder-Level2" id="FieldTreeHolder-$QData{"FieldTreeID"}"><!-- for dynamic load --></div>
+	<div style="clear: both;"><!-- W3C --></div>
+</ul>
+<!-- dtl:block:FieldTreePreview -->

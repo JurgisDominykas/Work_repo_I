@@ -1,0 +1,42 @@
+Content-Type: text/html; charset=$Env{"UserCharset"};
+
+<dtl set $Env{"Box0"} = "[ ">
+<dtl set $Env{"Box1"} = " ]">
+<!-- dtl:block:Field -->
+    <dl>
+        <dt class="$Data{"FieldClass"}">$QData{"Name"}:</dt>
+<!-- dtl:block:Text -->
+		<dd><input type="text" name="Field_$QData{"FieldID"}" value="$QData{"Value"}" class="$QData{"RequiredCssClass"}"  /></dd>
+<!-- dtl:block:Text -->
+<!-- dtl:block:Phone -->
+		<dd><input type="text" name="Field_$QData{"FieldID"}" value="$QData{"Value"}" class="$QData{"RequiredCssClass"} validate-number"  /></dd>
+<!-- dtl:block:Phone -->
+<!-- dtl:block:Money -->
+		<dd><input type="text" name="Field_$QData{"FieldID"}" value="$QData{"Value"}"  class="$QData{"RequiredCssClass"} validate-number" /></dd>
+<!-- dtl:block:Money -->
+<!-- dtl:block:Integer -->
+		<dd>$Text{"Number From"}: <input type="text" name="Field_$QData{"FieldID"}From" value="$QData{"ValueFrom"}"  class="$QData{"RequiredCssClass"} validate-number" />
+		$Text{"Number To"}: <input type="text" name="Field_$QData{"FieldID"}To" value="$QData{"ValueTo"}"  class="$QData{"RequiredCssClass"} validate-number" />
+#		$Text{Exact}: <input type="text" name="Field_$QData{"FieldID"}" value="$QData{"Value"}"  class="$QData{"RequiredCssClass"} validate-number" /></dd>
+<!-- dtl:block:Integer -->
+<!-- dtl:block:Double -->
+		<dd><input type="text" name="Field_$QData{"FieldID"}From" value="$QData{"Value"}" class="$QData{"RequiredCssClass"} validate-number"  />
+		<input type="text" name="Field_$QData{"FieldID"}To" value="$QData{"Value"}" class="$QData{"RequiredCssClass"} validate-number"  /></dd>
+<!-- dtl:block:Double -->
+<!-- dtl:block:Boolean -->
+		<dd><input type="checkbox" name="Field_$QData{"FieldID"}" value="1" $QData{"CheckedStr"} class="$QData{"RequiredCssClass"}"  /></dd>
+<!-- dtl:block:Boolean -->
+<!-- dtl:block:MultiText -->
+		<dd><textarea name="Field_$QData{"FieldID"}" class="$QData{"RequiredCssClass"}" >$QData{"Value"}</textarea></dd>
+<!-- dtl:block:MultiText -->
+<!-- dtl:block:DateTime -->
+		<dd>$Data{"DataValue"}</dd>
+<!-- dtl:block:DateTime -->
+<!-- dtl:block:Select -->
+		<dd>$Data{"SelectedStr"}</dd>
+<!-- dtl:block:Select -->
+<!-- dtl:block:EMail -->
+		<dd><input type="text" name="Field_$QData{"FieldID"}" value="$QData{"Value"}"  class="$QData{"RequiredCssClass"} validate-email" /></dd>
+<!-- dtl:block:EMail -->
+</dl>
+<!-- dtl:block:Field -->

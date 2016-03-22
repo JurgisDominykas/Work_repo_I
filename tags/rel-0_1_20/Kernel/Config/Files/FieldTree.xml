@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otrs_config version="1.0" init="Framework">
+    <CVS>$Id: FieldTree.xml,v 1.3 2008/01/23 08:58:26 mh Exp $</CVS>
+    <ConfigItem Name="Frontend::Module###AdminFieldTree" Required="0" Valid="1">
+        <Description Lang="en">Frontend module registration for the AdminFieldTree configuration in the admin area.</Description>
+        <Description Lang="de">Frontendmodul-Registration der AdminFieldTree Konfiguration im Admin-Bereich.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Admin::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Group>admin</Group>
+                <Description>Admin</Description>
+                <Title Translatable="1">Field Tree</Title>
+                <NavBarName>Admin</NavBarName>
+                <NavBarModule>
+                    <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
+                    <Name Translatable="1">Field Tree</Name>
+                    <Description Translatable="1">Manage field tree structures.</Description>
+                    <Block>Ticket</Block>
+                    <Prio>1010</Prio>
+                </NavBarModule>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::Module###AgentFieldTree" Required="0" Valid="1">
+        <Description Lang="en">Frontend module registration for the AdminFieldTree configuration in the admin area.</Description>
+        <Description Lang="de">Frontendmodul-Registration der AdminFieldTree Konfiguration im Admin-Bereich.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Admin::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Group>admin</Group>
+                <Group>solver</Group>
+                <Group>agent</Group>
+                <Description>Admin</Description>
+                <Title>FieldTree</Title>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CustomerFrontend::Module###CustomerFieldTree" Required="0" Valid="1">
+        <Description Lang="en">Frontend module registration for the customer usage.</Description>
+        <Group>FieldTree</Group>
+        <SubGroup>Frontend::Customer::ModuleRegistration</SubGroup>
+    </ConfigItem>
+    <ConfigItem Name="FieldTree::ProblemTypeRootFieldTreeID" Required="1" Valid="1">
+        <Description Lang="en">Default root ID for problem tree.</Description>
+        <Group>AKS</Group>
+        <SubGroup>FieldTree</SubGroup>
+        <Setting>
+            <String Regex="">2</String>
+        </Setting>
+    </ConfigItem>    
+  	<ConfigItem Name="FieldTree::ProblemTypeClass" Required="1" Valid="1">
+        <Description Lang="en">Default root class for problem type tree.</Description>
+        <Group>AKS</Group>
+        <SubGroup>FieldTree</SubGroup>
+        <Setting>
+            <String Regex="">ProblemType</String>
+        </Setting>
+    </ConfigItem>        
+    <ConfigItem Name="Frontend::Module###AdminDynamicFieldFieldTree" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for the agent interface.</Description>
+        <Group>DynamicFields</Group>
+        <SubGroup>Frontend::Admin::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Group>admin</Group>
+                <Description>Admin</Description>
+                <Title Translatable="1">Dynamic Fields FieldTree Backend GUI</Title>
+                <Loader>
+                    <JavaScript>Core.Agent.Admin.DynamicField.js</JavaScript>
+                </Loader>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="DynamicFields::Backend###FieldTree" Required="0" Valid="1">
+        <Description Translatable="1">DynamicField backend registration.</Description>
+        <Group>DynamicFields</Group>
+        <SubGroup>DynamicFields::Backend::Registration</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="DisplayName" Translatable="1">FieldTree</Item>
+                <Item Key="Module">Kernel::System::DynamicField::Backend::FieldTree</Item>
+                <Item Key="ConfigDialog">AdminDynamicFieldFieldTree</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>    
+</otrs_config>
