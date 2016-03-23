@@ -65,13 +65,13 @@ sub ValueGet {
 
 sub ValueSet {
     my ( $Self, %Param ) = @_;
-    
+
     my $ValueSetID;
     if ($Param{Value}->{ValueSetID} eq "NEW")
     {
         my $Result = $Kernel::OM->Get('Kernel::System::FieldTree')->ValueSetAdd(Data => $Param{Value}->{FieldsValues});
         $ValueSetID = $Result->{ValueSetID};
-    }   
+    }
 
     my $Success = $Kernel::OM->Get('Kernel::System::DynamicFieldValue')->ValueSet(
         FieldID  => $Param{DynamicFieldConfig}->{ID},
@@ -83,7 +83,7 @@ sub ValueSet {
         ],
         UserID => $Param{UserID},
     );
-    
+
     if ( $Param{DynamicFieldConfig}->{ObjectType} eq 'Ticket' ) {
         return if !$Kernel::OM->Get('Kernel::System::FieldTree')->RulesPostProcess(
             TicketID   => $Param{ObjectID},

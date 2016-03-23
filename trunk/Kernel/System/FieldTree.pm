@@ -1291,7 +1291,7 @@ sub FieldGet {
         $ItemData{FieldType}     = $Row[1];
         $ItemData{Name}          = $Row[2];
         $ItemData{FriendlyName}  = $Row[3];
-        $ItemData{Required} 	   = $Row[4];
+        $ItemData{Required}      = $Row[4];
         $ItemData{FieldTreeID}   = $Row[5];
         $ItemData{Template}      = $Row[6]  || '';;
         $ItemData{Target}        = $Row[7]  || '';;
@@ -1344,16 +1344,16 @@ sub ValueSetAdd {
             return;
         }
     }
-    
+
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
     $DBObject->Do(SQL => 'INSERT INTO field_tree_value_sets (id) VALUES (default)');
-    
+
     # get inserted ID
     #FIXED FROM HERE && NEEDS SEQUENCE FOR SOME REASON
     my $id = $DBObject->{dbh}->last_insert_id(undef, undef, 'field_tree_value_sets', undef);    
     #UP TO HERE
-    my $Data = $Param{Data};    
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my $Data = $Param{Data};
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
 
     my @HistoryLines;
     my $ProblemType = '';
