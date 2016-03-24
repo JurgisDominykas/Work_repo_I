@@ -22,159 +22,442 @@ my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
 $Helper->FixedTimeSet();
 
 {
-	$Helper->BeginWork();
+    $Helper->BeginWork();
 
-	my $TicketID = $TicketObject->TicketCreate (
-		Title 			=> 'Some Ticket Title',
-		Queue 			=> 'Raw',
-		Lock 			=> 'unlock',
-		Priority		=> '3 normal',
-		State			=> 'new',
-		CustomerID		=> '123456',
-		CustomerUser 	=> 'customer@examle.com',
-		OwnerID			=> 1,
-		UserID			=> 1,
-	);
+    my $TicketID = $TicketObject->TicketCreate (
+        Title           => 'Some Ticket Title',
+        Queue           => 'Raw',
+        Lock            => 'unlock',
+        Priority        => '3 normal',
+        State           => 'new',
+        CustomerID      => '123456',
+        CustomerUser    => 'customer@examle.com',
+        OwnerID         => 1,
+        UserID          => 1,
+    );
 
-	$Self->True(
-		$TicketID,
-		'TicketCreate()'
-	);
+    $Self->True(
+        $TicketID,
+        'TicketCreate()'
+    );
 
-	my $ItemID = $FieldTreeObject->ItemAdd(
-		Class			=> '_Testing_Class',
-		Name			=> 'Testing_Class_A',
-		FriendlyName	=> 'Friendly_Testing_Class_A',
-		ParentID		=> -1,
-		ValidID			=> 1,
-		CssClass		=> '',
-		Comment			=> 'Test Comment',
-		UserID			=> 1,
-	);
+    my $ItemID = $FieldTreeObject->ItemAdd(
+        Class           => '_Testing_Class',
+        Name            => 'Testing_Class_A',
+        FriendlyName    => 'Friendly_Testing_Class_A',
+        ParentID        => -1,
+        ValidID         => 1,
+        CssClass        => '',
+        Comment         => 'Test Comment',
+        UserID          => 1,
+    );
 
-	$Self->True(
-		$ItemID,
-		'ItemAdd()',
-	);
+    $Self->True(
+        $ItemID,
+        'ItemAdd()',
+    );
 
-	my $FieldID = $FieldTreeObject->FieldAdd(
-		FieldTreeID 	=> $ItemID,
-		FieldType		=> 'Text',
-		Name			=> 'Test_Field',
-		FriendlyName	=> 'Friendly_Test_Name',
-		Required		=> 1,
-		Template		=> 'Test',
-		Target			=> '16',
-		Position		=> '2',
-		ValidID			=> 1,
-		Hidden 			=> 0,
-		Comment			=> 'Test comment',
-		UserID			=> 1,
-	);
+    my $FieldID = $FieldTreeObject->FieldAdd(
+        FieldTreeID     => $ItemID,
+        FieldType       => 'Text',
+        Name            => 'Test_Field',
+        FriendlyName    => 'Friendly_Test_Name',
+        Required        => 1,
+        Template        => 'Test',
+        Target          => '16',
+        Position        => '2',
+        ValidID         => 1,
+        Hidden          => 0,
+        Comment         => 'Test comment',
+        UserID          => 1,
+    );
 
-	$Self->True(
-		$FieldID,
-		'FieldAdd()',
-	);
+    $Self->True(
+        $FieldID,
+        'FieldAdd()',
+    );
 
-	my $DynamicFieldsConfig = $ConfigObject->Get('DynamicFields::Driver');
+    my $DynamicFieldsConfig = $ConfigObject->Get('DynamicFields::Driver');
 
-	$Self->Is(
-		ref $DynamicFieldsConfig,
-		'HASH',
-		'Dynamic Field configuration',
-	);
+    $Self->Is(
+        ref $DynamicFieldsConfig,
+        'HASH',
+        'Dynamic Field configuration',
+    );
 
-	$Self->IsNotDeeply(
-		$DynamicFieldsConfig,
-		{},
-		'Dynamic field configuration is not empty',
-	);
+    $Self->IsNotDeeply(
+        $DynamicFieldsConfig,
+        {},
+        'Dynamic field configuration is not empty',
+    );
 
-	$Self->Is(
-		ref $DriverObject,
-		'Kernel::System::DynamicField::Driver::FieldTree',
-		'DriverObject is loaded',
-	);
+    $Self->Is(
+        ref $DriverObject,
+        'Kernel::System::DynamicField::Driver::FieldTree',
+        'DriverObject is loaded',
+    );
 
-	$Helper->Rollback();
+    $Helper->Rollback();
 }
 
 {
-	$Helper->BeginWork();
+    $Helper->BeginWork();
 
-	my $TicketID = $TicketObject->TicketCreate (
-		Title 			=> 'Some Ticket Title',
-		Queue 			=> 'Raw',
-		Lock 			=> 'unlock',
-		Priority		=> '3 normal',
-		State			=> 'new',
-		CustomerID		=> '123456',
-		CustomerUser 	=> 'customer@examle.com',
-		OwnerID			=> 1,
-		UserID			=> 1,
-	);
+    my $TicketID = $TicketObject->TicketCreate (
+        Title           => 'Some Ticket Title',
+        Queue           => 'Raw',
+        Lock            => 'unlock',
+        Priority        => '3 normal',
+        State           => 'new',
+        CustomerID      => '123456',
+        CustomerUser    => 'customer@examle.com',
+        OwnerID         => 1,
+        UserID          => 1,
+    );
 
-	my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
-    Name       => "dynamicfieldtest",
-    Label      => 'a description',
-    FieldOrder => 9991,
-    FieldType  => 'FieldTree',
-    ObjectType => 'Ticket',
-    Config     => {
-        DefaultValue => 'a value',
-    },
-    ValidID => 1,
-    UserID  => 1,
-);
+    my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
+        Name       => "dynamicfieldtest",
+        Label      => 'a description',
+        FieldOrder => 9991,
+        FieldType  => 'FieldTree',
+        ObjectType => 'Ticket',
+        Config     => {
+            DefaultValue => 'a value',
+        },
+        ValidID => 1,
+        UserID  => 1,
+    );
 
-	my $ItemID = $FieldTreeObject->ItemAdd(
-		Class			=> '_Testing_Class',
-		Name			=> 'Testing_Class_A',
-		FriendlyName	=> 'Friendly_Testing_Class_A',
-		ParentID		=> -1,
-		ValidID			=> 1,
-		CssClass		=> '',
-		Comment			=> 'Test Comment',
-		UserID			=> 1,
-	);
+    my $ItemID = $FieldTreeObject->ItemAdd(
+        Class           => '_Testing_Class',
+        Name            => 'Testing_Class_A',
+        FriendlyName    => 'Friendly_Testing_Class_A',
+        ParentID        => -1,
+        ValidID         => 1,
+        CssClass        => '',
+        Comment         => 'Test Comment',
+        UserID          => 1,
+    );
 
-	my $FieldID = $FieldTreeObject->FieldAdd(
-		FieldTreeID 	=> $ItemID,
-		FieldType		=> 'Text',
-		Name			=> 'Test_Field',
-		FriendlyName	=> 'Friendly_Test_Name',
-		Required		=> 1,
-		Template		=> 'Test',
-		Target			=> '16',
-		Position		=> '2',
-		ValidID			=> 1,
-		Hidden 			=> 0,
-		Comment			=> 'Test comment',
-		UserID			=> 1,
-	);
+    my $FieldID = $FieldTreeObject->FieldAdd(
+        FieldTreeID     => $ItemID,
+        FieldType       => 'Text',
+        Name            => 'Test_Field',
+        FriendlyName    => 'Friendly_Test_Name',
+        Required        => 1,
+        Template        => 'Test',
+        Target          => '16',
+        Position        => '2',
+        ValidID         => 1,
+        Hidden          => 0,
+        Comment         => 'Test comment',
+        UserID          => 1,
+    );
 
-	my $ValueSetRes = $DriverObject->ValueSet(
-		Value => {
-			ValueSetID		=> "NEW",
-			FieldsValues	=> {
-				$FieldID => "Test text",
-			},
-		},
-		DynamicFieldConfig	=> {
-			ID => $DynamicFieldID,
-			ObjectType => "FieldTree",
-		},
-		ObjectID			=> $TicketID,
-		UserID				=> 1,
-	);
+    my $ValueSetRes = $DriverObject->ValueSet(
+        Value => {
+            ValueSetID      => "NEW",
+            FieldsValues    => {
+                $FieldID => "Test text",
+            },
+        },
+        DynamicFieldConfig  => {
+            ID => $DynamicFieldID,
+            ObjectType => "FieldTree",
+        },
+        ObjectID            => $TicketID,
+        UserID              => 1,
+    );
 
-	$Self->True(
-		$ValueSetRes,
-		"ValueSet()",
-	);
-	$Helper->Rollback();
+    $Self->True(
+        $ValueSetRes,
+        "ValueSet()",
+    );
+
+    $Helper->Rollback();
 }
+
+{
+    $Helper->BeginWork();
+
+    my $TicketID = $TicketObject->TicketCreate (
+        Title           => 'Some Ticket Title',
+        Queue           => 'Raw',
+        Lock            => 'unlock',
+        Priority        => '3 normal',
+        State           => 'new',
+        CustomerID      => '123456',
+        CustomerUser    => 'customer@examle.com',
+        OwnerID         => 1,
+        UserID          => 1,
+    );
+
+    my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
+        Name       => "dynamicfieldtest",
+        Label      => 'a description',
+        FieldOrder => 9991,
+        FieldType  => 'FieldTree',
+        ObjectType => 'Ticket',
+        Config     => {
+            DefaultValue => 'a value',
+        },
+        ValidID => 1,
+        UserID  => 1,
+    );
+
+    my $ItemID = $FieldTreeObject->ItemAdd(
+        Class           => '_Testing_Class',
+        Name            => 'Testing_Class_A',
+        FriendlyName    => 'Friendly_Testing_Class_A',
+        ParentID        => -1,
+        ValidID         => 1,
+        CssClass        => '',
+        Comment         => 'Test Comment',
+        UserID          => 1,
+    );
+
+    my $FieldID = $FieldTreeObject->FieldAdd(
+        FieldTreeID     => $ItemID,
+        FieldType       => 'Text',
+        Name            => 'Test_Field',
+        FriendlyName    => 'Friendly_Test_Name',
+        Required        => 1,
+        Template        => 'Test',
+        Target          => '16',
+        Position        => '2',
+        ValidID         => 1,
+        Hidden          => 0,
+        Comment         => 'Test comment',
+        UserID          => 1,
+    );
+
+    my $ValueSetRes = $DriverObject->ValueSet(
+        Value => {
+            ValueSetID      => "NEW",
+            FieldsValues    => {
+                $FieldID => "Test text",
+            },
+        },
+        DynamicFieldConfig  => {
+            ID => $DynamicFieldID,
+            ObjectType => "FieldTree",
+        },
+        ObjectID            => $TicketID,
+        UserID              => 1,
+    );
+
+    my $ValueGetRes = $DriverObject->ValueGet(
+       DynamicFieldConfig => {
+            ID => $DynamicFieldID,
+       },
+       ObjectID            => $TicketID,
+    );
+
+    $Self->True(
+        $ValueGetRes,
+        "ValueGet()",
+    );
+
+    $Self->Is(
+        ref $ValueGetRes,
+        "HASH",
+        "ValueGet()",
+    );
+
+    $Helper->Rollback();
+}
+
+{
+    $Helper->BeginWork();
+
+    my $TicketID = $TicketObject->TicketCreate (
+        Title           => 'Some Ticket Title',
+        Queue           => 'Raw',
+        Lock            => 'unlock',
+        Priority        => '3 normal',
+        State           => 'new',
+        CustomerID      => '123456',
+        CustomerUser    => 'customer@examle.com',
+        OwnerID         => 1,
+        UserID          => 1,
+    );
+
+    my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
+        Name       => "dynamicfieldtest",
+        Label      => 'a description',
+        FieldOrder => 9991,
+        FieldType  => 'FieldTree',
+        ObjectType => 'Ticket',
+        Config     => {
+            DefaultValue => 'a value',
+        },
+        ValidID => 1,
+        UserID  => 1,
+    );
+
+    my $ItemID = $FieldTreeObject->ItemAdd(
+        Class           => '_Testing_Class',
+        Name            => 'Testing_Class_A',
+        FriendlyName    => 'Friendly_Testing_Class_A',
+        ParentID        => -1,
+        ValidID         => 1,
+        CssClass        => '',
+        Comment         => 'Test Comment',
+        UserID          => 1,
+    );
+
+    my $FieldID = $FieldTreeObject->FieldAdd(
+        FieldTreeID     => $ItemID,
+        FieldType       => 'Text',
+        Name            => 'Test_Field',
+        FriendlyName    => 'Friendly_Test_Name',
+        Required        => 1,
+        Template        => 'Test',
+        Target          => '16',
+        Position        => '2',
+        ValidID         => 1,
+        Hidden          => 0,
+        Comment         => 'Test comment',
+        UserID          => 1,
+    );
+
+    my $ValueSetRes = $DriverObject->ValueSet(
+        Value => {
+            ValueSetID      => "NEW",
+            FieldsValues    => {
+                $FieldID => "Test text",
+            },
+        },
+        DynamicFieldConfig  => {
+            ID => $DynamicFieldID,
+            ObjectType => "FieldTree",
+        },
+        ObjectID            => $TicketID,
+        UserID              => 1,
+    );
+
+    my $ValueDeleteRes = $DriverObject->ValueDelete(
+        DynamicFieldConfig => {
+            ID => $DynamicFieldID,
+        },
+        ObjectID           => $TicketID,
+        UserID             => 1,
+    );
+
+    $Self->True(
+        $ValueDeleteRes,
+        "ValueDelete()",
+    );
+
+    my $ValueGetRes = $DriverObject->ValueGet(
+       DynamicFieldConfig => {
+            ID => $DynamicFieldID,
+       },
+       ObjectID           => $TicketID,
+    );
+
+    $Self->False(
+        $ValueGetRes,
+        "ValueDelete()",
+    );
+    $Helper->Rollback();
+};
+
+{
+    $Helper->BeginWork();
+
+    my $TicketID = $TicketObject->TicketCreate (
+        Title           => 'Some Ticket Title',
+        Queue           => 'Raw',
+        Lock            => 'unlock',
+        Priority        => '3 normal',
+        State           => 'new',
+        CustomerID      => '123456',
+        CustomerUser    => 'customer@examle.com',
+        OwnerID         => 1,
+        UserID          => 1,
+    );
+
+    my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
+        Name       => "dynamicfieldtest",
+        Label      => 'a description',
+        FieldOrder => 9991,
+        FieldType  => 'FieldTree',
+        ObjectType => 'Ticket',
+        Config     => {
+            DefaultValue => 'a value',
+        },
+        ValidID => 1,
+        UserID  => 1,
+    );
+
+    my $ItemID = $FieldTreeObject->ItemAdd(
+        Class           => '_Testing_Class',
+        Name            => 'Testing_Class_A',
+        FriendlyName    => 'Friendly_Testing_Class_A',
+        ParentID        => -1,
+        ValidID         => 1,
+        CssClass        => '',
+        Comment         => 'Test Comment',
+        UserID          => 1,
+    );
+
+    my $FieldID = $FieldTreeObject->FieldAdd(
+        FieldTreeID     => $ItemID,
+        FieldType       => 'Text',
+        Name            => 'Test_Field',
+        FriendlyName    => 'Friendly_Test_Name',
+        Required        => 1,
+        Template        => 'Test',
+        Target          => '16',
+        Position        => '2',
+        ValidID         => 1,
+        Hidden          => 0,
+        Comment         => 'Test comment',
+        UserID          => 1,
+    );
+
+    my $ValueSetRes = $DriverObject->ValueSet(
+        Value => {
+            ValueSetID      => "NEW",
+            FieldsValues    => {
+                $FieldID => "Test text",
+            },
+        },
+        DynamicFieldConfig  => {
+            ID => $DynamicFieldID,
+            ObjectType => "FieldTree",
+        },
+        ObjectID            => $TicketID,
+        UserID              => 1,
+    );
+
+    my $ValueDeleteRes = $DriverObject->AllValuesDelete(
+        DynamicFieldConfig => {
+            ID => $DynamicFieldID,
+        },
+        UserID             => 1,
+    );
+
+    $Self->True(
+        $ValueDeleteRes,
+        "AllValuesDelete()",
+    );
+
+    my $ValueGetRes = $DriverObject->ValueGet(
+       DynamicFieldConfig => {
+            ID => $DynamicFieldID,
+       },
+       ObjectID           => $TicketID,
+    );
+
+    $Self->False(
+        $ValueGetRes,
+        "AllValuesDelete()",
+    );
+
+    $Helper->Rollback();
+};
 
 $Kernel::OM->Get('Kernel::System::Cache')->CleanUp();
 
