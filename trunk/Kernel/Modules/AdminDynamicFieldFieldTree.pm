@@ -14,6 +14,8 @@ package Kernel::Modules::AdminDynamicFieldFieldTree;
 use strict;
 use warnings;
 
+use lib "/opt/otrs";
+
 use Kernel::System::VariableCheck qw(:all);
 
 our @ObjectDependencies = (

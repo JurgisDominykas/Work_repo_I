@@ -45,13 +45,14 @@ sub new {
 
 sub Run {
     my ( $Self, %Param ) = @_;
-    
+
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
     # ------------------------------------------------------------ #
     # catalog item list
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'ItemList' ) {
+
         my $Class = $ParamObject->GetParam( Param => "Class" ) || '';
 
         # check needed class
@@ -95,10 +96,10 @@ sub Run {
 
         # check item list
         return $LayoutObject->ErrorScreen()
-            if !$ItemIDList || !@{$ItemIDList};
+            if !$ItemIDList; # || !@{$ItemIDList}; Doesn't work this way
 
         my $CssClass = '';
-        for my $ItemID ( @{$ItemIDList} ) {
+        for my $ItemID (keys %{$ItemIDList} ) { # Changed from @ to % and added "keys"
             # set output class
             $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
 
@@ -113,7 +114,7 @@ sub Run {
                 Data => {
                     %{$ItemData},
                     CssClass      => $CssClass,
-                    ParentID => 	$ItemData->{ParentID},
+                    ParentID =>     $ItemData->{ParentID},
                     Valid         => $ValidList{ $ItemData->{ValidID} },
                 },
             );
@@ -197,13 +198,13 @@ sub Run {
         );
 
         if ($ItemData{ItemID} eq 'NEW') {
-        	my $TempParentId = $ParamObject->GetParam( Param => "ParentID" );
-        	if ($TempParentId) {
-	        	$ItemData{ParentID} = $TempParentId;
-	        }
-	        else { #Provide the root ID
-	        	$ItemData{ParentID} = -1;
-	        }
+            my $TempParentId = $ParamObject->GetParam( Param => "ParentID" );
+            if ($TempParentId) {
+                $ItemData{ParentID} = $TempParentId;
+            }
+            else { #Provide the root ID
+                $ItemData{ParentID} = -1;
+            }
         }
 
         # output ItemEdit
@@ -211,7 +212,7 @@ sub Run {
             Name => 'ItemEdit',
             Data => {
                 %ItemData,
-                ValidOptionStrg         => $ValidOptionStrg,
+                ValidOptionStrg => $ValidOptionStrg,
             },
         );
 
@@ -235,122 +236,116 @@ sub Run {
                 },
             );
         }
-        
+
         if ($ItemData{ItemID} eq 'NEW') {
         }
         else {
-	        
-	      # Populate child items list
-	        my $ItemIDList = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemListSorted(
-	            Valid => 0,
-				Class => $ItemData{Class},      
-				ParentID=> $ItemData{ItemID}
-			);
-	
 
-	        $LayoutObject->Block(
-	               Name => 'OverviewChildItems',
-	                Data => {
-	                    ItemID=>$ItemData{ItemID},
-	                    Class =>$ItemData{Class}
-	                },
-	            );
-			
-	        my $CssClass = '';
-	        for my $ChildItemID ( @{$ItemIDList} ) {
-	
-	            # set output class
-	            $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
-	
-	            # get item data
-	            my $ChildItemData = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemGet(
-	                ItemID => $ChildItemID,
-	            );
-	
-	            # output overview item list
-	            $LayoutObject->Block(
-	                Name => 'OverviewChildItemList',
-	                Data => {
-	                    %{$ChildItemData},
-	                    CssClass      => $CssClass,
-	                    Valid         => $ValidList{ $ChildItemData->{ValidID} },
-	                },
-	            );
-	        }        
-			
-			
-			my $SubFieldaction = $ParamObject->GetParam( Param => "SubFieldaction" );
-			
-			if  (defined($SubFieldaction) && $SubFieldaction eq 'FieldEdit') {
+          # Populate child items list
+            my $ItemIDList = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemListSorted(
+                Valid => 0,
+                Class => $ItemData{Class},
+                ParentID=> $ItemData{ItemID}
+            );
 
-				my %FieldData;
-				$FieldData{FieldID} = $ParamObject->GetParam( Param => "FieldID" );
-		        if ( $FieldData{FieldID} eq 'NEW' ) {
-		            # get leaf id
-		            $FieldData{FieldTreeID} = $ParamObject->GetParam( Param => "ItemID" );
-		
-		            # redirect to overview
-		            return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" )
-		                if !$FieldData{FieldTreeID};
-		        }
-		        else {
-		
-		            # get item data
-		            my $FieldDataRef = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
-		                FieldID => $FieldData{FieldID},
-		            );
-		
-		            # check item data
-		            return $LayoutObject->ErrorScreen()
-		                if !$FieldDataRef;
-		
-		            %FieldData = %{$FieldDataRef};
-		        }
-		        
-		        my $checked = '';
-		        if ($FieldData{Required}) {
-		        	$checked = ' checked';
-		        }
-				my $FieldTypes = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldTypes();
+            $LayoutObject->Block(
+                   Name => 'OverviewChildItems',
+                    Data => {
+                        ItemID=>$ItemData{ItemID},
+                        Class =>$ItemData{Class}
+                    },
+                );
 
-		        my $FieldTypesStr  = $LayoutObject->BuildSelection(
-		            Name       => 'FieldType',
-		            Data       => $FieldTypes,
-		            SelectedID => $FieldData{FieldType},
-		        );
-		        
-		        
-		        
-		        my $ClassList       = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ClassList();
-		        my $ClassOptionStrg = $LayoutObject->BuildSelection(
-		            Name         => 'Template',
-		            Data         => $ClassList,
-		            SelectedID   => $FieldData{Template},
-		            PossibleNone => 1,
-		            Translation  => 0,
-		        );
-		        
-		        my %QueueList       = $Kernel::OM->Get('Kernel::System::Queue')->QueueList();
-		        my $QueueStr = $LayoutObject->BuildSelection(
-		            Name         => 'Template',
-		            Data         => \%QueueList,
-		            SelectedID   => $FieldData{Template},
-		            PossibleNone => 1,
-		            Translation  => 0,
-		        );
-		        
-		        my $Parent = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemGet(ItemID=>$FieldData{FieldTreeID});
-		        my $FieldDetailsBlock = "FieldDetailsGeneral";
-		        if ($Parent->{Class} eq "Templates") {
-		            $FieldDetailsBlock = "FieldDetailsTemplates";
-		        }
-		        
+            my $CssClass = '';
+            for my $ChildItemID (keys %{$ItemIDList} ) { # Changed @ to % and added keys"
+
+                # set output class
+                $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
+
+                # get item data
+                my $ChildItemData = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemGet(
+                    ItemID => $ChildItemID,
+                );
+
+                # output overview item list
+                $LayoutObject->Block(
+                    Name => 'OverviewChildItemList',
+                    Data => {
+                        %{$ChildItemData},
+                        CssClass      => $CssClass,
+                        Valid         => $ValidList{ $ChildItemData->{ValidID} },
+                    },
+                );
+            }
+
+            my $SubFieldaction = $ParamObject->GetParam( Param => "SubFieldaction" );
+
+            if  (defined($SubFieldaction) && $SubFieldaction eq 'FieldEdit') {
+
+                my %FieldData;
+                $FieldData{FieldID} = $ParamObject->GetParam( Param => "FieldID" );
+                if ( $FieldData{FieldID} eq 'NEW' ) {
+                    # get leaf id
+                    $FieldData{FieldTreeID} = $ParamObject->GetParam( Param => "ItemID" );
+
+                    # redirect to overview
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" )
+                        if !$FieldData{FieldTreeID};
+                }
+                else {
+
+                    # get item data
+                    my $FieldDataRef = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
+                        FieldID => $FieldData{FieldID},
+                    );
+
+                    # check item data
+                    return $LayoutObject->ErrorScreen()
+                        if !$FieldDataRef;
+
+                    %FieldData = %{$FieldDataRef};
+                }
+
+                my $checked = '';
+                if ($FieldData{Required}) {
+                    $checked = ' checked';
+                }
+                my $FieldTypes = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldTypes();
+
+                my $FieldTypesStr  = $LayoutObject->BuildSelection(
+                    Name       => 'FieldType',
+                    Data       => $FieldTypes,
+                    SelectedID => $FieldData{FieldType},
+                );
+
+                my $ClassList       = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ClassList();
+                my $ClassOptionStrg = $LayoutObject->BuildSelection(
+                    Name         => 'Template',
+                    Data         => $ClassList,
+                    SelectedID   => $FieldData{Template},
+                    PossibleNone => 1,
+                    Translation  => 0,
+                );
+
+                my %QueueList       = $Kernel::OM->Get('Kernel::System::Queue')->QueueList();
+                my $QueueStr = $LayoutObject->BuildSelection(
+                    Name         => 'Template',
+                    Data         => \%QueueList,
+                    SelectedID   => $FieldData{Template},
+                    PossibleNone => 1,
+                    Translation  => 0,
+                );
+
+                my $Parent = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemGet(ItemID=>$FieldData{FieldTreeID});
+                my $FieldDetailsBlock = "FieldDetailsGeneral";
+                if ($Parent->{Class} eq "Templates") {
+                    $FieldDetailsBlock = "FieldDetailsTemplates";
+                }
+
                 for (("FieldEdit", $FieldDetailsBlock))
                 {
-                    
-                
-		       
-		        $LayoutObject->Block(
+
+                $LayoutObject->Block(
                     Name => $_,
                     Data => {
                         %FieldData,
@@ -361,95 +356,90 @@ sub Run {
                         QueueStr => $QueueStr,
                     },
                 );
-                 
-                }
-			}
-			
-			
-			{
-	
-				# Populate fields list
-		        my $ItemIDList = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldList(
-		            Valid => 0,
-					FieldTreeID => $ItemData{ItemID},      
-				);
-				
-		
-	
-		        $LayoutObject->Block(
-		               Name => 'OverviewFields',
-		               Data => {
-		                    ItemID=>$ItemData{ItemID},
-		               },
-		            );
-		        my $CssClass = '';
-		        
-		my @FieldList;
 
-		for my $FieldID ( keys %{$ItemIDList} ) {
-			my $Field = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
-	                    FieldID => $FieldID,
-			);
-			push @FieldList, $Field;
-		}
-		
-		for my $ChildItemData ( sort { $a->{Position} <=> $b->{Position} } @FieldList ) {
-		
-			
-			my $ChildItemID = $ChildItemData->{FieldID};
-		        
-		            # set output class
-		            $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
-		
-		            # get item data
-		            my $ChildItemData = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
-		                FieldID => $ChildItemID,
-		            );
-		
-		            # output overview item list
-		            $LayoutObject->Block(
-		                Name => 'OverviewFieldList',
-		                Data => {
-		                    %{$ChildItemData},
-		                    CssClass      => $CssClass,
-		                    Valid         => $ValidList{ $ChildItemData->{ValidID} },
-		                },
-		            );
-		        }
+                }
+            }
+
+            {
+
+                # Populate fields list
+                my $ItemIDList = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldList(
+                    Valid => 0,
+                    FieldTreeID => $ItemData{ItemID},
+                );
+
+                $LayoutObject->Block(
+                       Name => 'OverviewFields',
+                       Data => {
+                            ItemID=>$ItemData{ItemID},
+                       },
+                    );
+                my $CssClass = '';
+
+        my @FieldList;
+
+        for my $FieldID ( keys %{$ItemIDList} ) {
+            my $Field = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
+                        FieldID => $FieldID,
+            );
+            push @FieldList, $Field;
+        }
+
+        for my $ChildItemData ( sort { $a->{Position} <=> $b->{Position} } @FieldList ) {
+
+            my $ChildItemID = $ChildItemData->{FieldID};
+
+                    # set output class
+                    $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
+
+                    # get item data
+                    my $ChildItemData = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
+                        FieldID => $ChildItemID,
+                    );
+
+                    # output overview item list
+                    $LayoutObject->Block(
+                        Name => 'OverviewFieldList',
+                        Data => {
+                            %{$ChildItemData},
+                            CssClass      => $CssClass,
+                            Valid         => $ValidList{ $ChildItemData->{ValidID} },
+                        },
+                    );
+                }
 
 
         $LayoutObject->Block(
-	         Name => 'OverviewXML',
+             Name => 'OverviewXML',
              Data => {
-	        	 ItemID=>$ItemData{ItemID},
-	     	}
-	     );
-				
-		for my $ChildItemData ( sort { $a->{Position} <=> $b->{Position} } @FieldList ) {
-		
-			
-			my $ChildItemID = $ChildItemData->{FieldID};
-		        
-		            # set output class
-		            $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
-		
-		            # get item data
-		            my $ChildItemData = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
-		                FieldID => $ChildItemID,
-		            );
-		
-		            # output overview item list
-		            $LayoutObject->Block(
-		                Name => 'OverviewXMLFieldList',
-		                Data => {
-		                    %{$ChildItemData},
-		                    CssClass      => $CssClass,
-		                    Valid         => $ValidList{ $ChildItemData->{ValidID} },
-		                },
-		            );
-		        }
-		    }
-	    }
+                 ItemID=>$ItemData{ItemID},
+            }
+         );
+
+        for my $ChildItemData ( sort { $a->{Position} <=> $b->{Position} } @FieldList ) {
+
+            my $ChildItemID = $ChildItemData->{FieldID};
+
+                    # set output class
+                    $CssClass = $CssClass eq 'searchactive' ? 'searchpassive' : 'searchactive';
+
+                    # get item data
+                    my $ChildItemData = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
+                        FieldID => $ChildItemID,
+                    );
+
+                    # output overview item list
+                    $LayoutObject->Block(
+                        Name => 'OverviewXMLFieldList',
+                        Data => {
+                            %{$ChildItemData},
+                            CssClass      => $CssClass,
+                            Valid         => $ValidList{ $ChildItemData->{ValidID} },
+                        },
+                    );
+                }
+            }
+        }
 
 
         # output header
@@ -480,7 +470,7 @@ sub Run {
         }
         if ( $FieldData{FieldType} eq "UserInfoFetcher" ) {
             my %FIDs;
-            
+
             for my $Param (qw(Template_UIF_CellularAccountNo Template_UIF_StreetName Template_UIF_PlaceName
                             Template_UIF_AreaName Template_UIF_CountryName)) {
                 $FIDs{$Param} = $ParamObject->GetParam( Param => $Param ) || '';

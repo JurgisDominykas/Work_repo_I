@@ -14,6 +14,8 @@ package Kernel::System::FieldTree;
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 our @ObjectDependencies = (
     'Kernel::System::CheckItem',
     'Kernel::System::DB',
@@ -21,7 +23,7 @@ our @ObjectDependencies = (
     'Kernel::System::GeneralCatalog',
     'Kernel::System::Cache',
     'Kernel::System::Log',
-	'Kernel::System::Queue',
+    'Kernel::System::Queue',
 );
 
 #use Kernel::System::ObjectManager;
@@ -87,9 +89,21 @@ sub new {
     # ParamObject available TIK tikriems requestams!!!
     $Self->{CacheType} = 'FieldTree';
     $Self->{CacheTTL} = 10000;
-	$Self->{TTL} = 10000;
+    $Self->{TTL} = 10000;
     
     return $Self;
+}
+
+sub HumRedGenCat {
+    my ( $Slef, %Param) = @_;
+
+    my $Template = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
+                FieldID => $Param{FieldID},)->{Template};
+    my $Catalog = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ItemList(
+        Class => $Template,
+    );
+
+    return $Catalog;
 }
 
 =item ClassList()
@@ -438,7 +452,7 @@ sub ItemGet {
         $ItemData{Class}         = $Row[1];
         $ItemData{Name}          = $Row[2];
         $ItemData{FriendlyName}  = $Row[3];
-        $ItemData{ParentID} 	   = $Row[4];
+        $ItemData{ParentID}        = $Row[4];
         $ItemData{ValidID}       = $Row[5];
         $ItemData{CssClass}      = $Row[6];
         $ItemData{Comment}       = $Row[7] || '';
@@ -486,9 +500,9 @@ sub ItemAdd {
     my ( $Self, %Param ) = @_;
 
     # if ($Self->{CacheObject}) {
-    # 	$Self->{CacheObject}->CleanUp(
-    # 		Type	=> 'FieldTree',
-    # 	);
+    #   $Self->{CacheObject}->CleanUp(
+    #       Type    => 'FieldTree',
+    #   );
     # }
 
     # check needed stuff
@@ -512,7 +526,7 @@ sub ItemAdd {
     }
 
     # cleanup given params
-    
+
 # Justinas FIXME FIXME FIXME: Required Server-side validation for the ParentID integer
     my $CheckItem = $Kernel::OM->Get('Kernel::System::CheckItem');
     for my $Argument (qw(Class)) {
@@ -544,7 +558,6 @@ sub ItemAdd {
     while ( $DBObject->FetchrowArray() ) {
         $NoAdd = 1;
     }
-    
 
     # abort insert of new item, if item name already exists
     if ($NoAdd) {
@@ -571,7 +584,7 @@ sub ItemAdd {
             \$Param{FriendlyName},  \$Param{ParentID},
             \$Param{ValidID},       \$Param{CssClass},
             \$Param{Comment},       \$Param{UserID},
-            \$Param{UserID},		\$Param{Position},
+            \$Param{UserID},        \$Param{Position},
         ],
     );
 
@@ -592,11 +605,10 @@ sub ItemAdd {
     return $ItemID;
 }
 
-
 sub FieldTreesRecursiveIDs {
    my ( $Self, %Param ) = @_;
-   
-	#check needed stuff
+
+    #check needed stuff
     for my $Argument (qw(ItemID Separator)) {
         if ( !$Param{$Argument} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
@@ -606,29 +618,28 @@ sub FieldTreesRecursiveIDs {
             return;
         }
     }
-    
+
     my $Result = "";
-    
+
     my $ItemID = $Param{ItemID};
-              
-   	while (defined($ItemID) && $ItemID ne "-1" && $ItemID ne "" && $ItemID ne $Param{RootID} && $ItemID gt 0) 
-	{
-		if($Result ne "")
-		{
-			$Result = "$Param{Separator}$Result";
-		}
-			
-		$Result = "$ItemID$Result";
-		
-		my $Item = $Self->ItemGet(
-			ItemID => $ItemID,
-		);
-		
-		
-		$ItemID = $Item->{ParentID};
-	}
-    
-	return $Result;
+
+    while (defined($ItemID) && $ItemID ne "-1" && $ItemID ne "" && $ItemID ne $Param{RootID} && $ItemID gt 0) 
+    {
+        if($Result ne "")
+        {
+            $Result = "$Param{Separator}$Result";
+        }
+
+        $Result = "$ItemID$Result";
+
+        my $Item = $Self->ItemGet(
+            ItemID => $ItemID,
+        );
+
+        $ItemID = $Item->{ParentID};
+    }
+
+    return $Result;
 }
 
 =item ItemRecursiveName()
@@ -657,45 +668,44 @@ sub ItemRecursiveName {
     }
     my $Result = "";
    #  if ($Self->{CacheObject}) {
-   #  	$Result = $Self->{CacheObject}->Get(
-   #  		Type	=> 'FieldTree',
-			# Key => 'RecursiveName_'.$Param{ItemID},    		
-   #  	);
+   #    $Result = $Self->{CacheObject}->Get(
+   #        Type    => 'FieldTree',
+            # Key => 'RecursiveName_'.$Param{ItemID},
+   #    );
    #  }
     if ($Result) {
-    	return $Result;
+        return $Result;
     }
-    
+
     my $ItemID = $Param{ItemID};
     my $Name = '';
-	while (defined($ItemID) && $ItemID ne "-1" && $ItemID ne "" && $ItemID gt 0) 
-	{
-		my $Item = $Self->ItemGet(
-			ItemID => $ItemID,
-		);
-		my $b = $ItemID;
-		if (defined($Item->{ParentID}) && $Item->{ParentID} gt 0) {
-			$Name = (defined($Item->{Name}) ?$Item->{Name} : '|') . ($ItemID+0 == -1 || $ItemID eq $Param{ItemID} ? '' : ' - ').$Name;
-		}
-		$ItemID = $Item->{ParentID};
-		if (!$ItemID) {
+    while (defined($ItemID) && $ItemID ne "-1" && $ItemID ne "" && $ItemID gt 0)
+    {
+        my $Item = $Self->ItemGet(
+            ItemID => $ItemID,
+        );
+        my $b = $ItemID;
+        if (defined($Item->{ParentID}) && $Item->{ParentID} gt 0) {
+            $Name = (defined($Item->{Name}) ?$Item->{Name} : '|') . ($ItemID+0 == -1 || $ItemID eq $Param{ItemID} ? '' : ' - ').$Name;
+        }
+        $ItemID = $Item->{ParentID};
+        if (!$ItemID) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "Bad parent item ID: $ItemID".Dumper($Item),
             );
         }
-          
-		
-	}
+
+    }
    #  if ($Self->{CacheObject}) {
-   #  	$Result = $Self->{CacheObject}->Set(
-   #  		Type  => 'FieldTree',
-			# Key   => 'RecursiveName_'.$Param{ItemID},
-			# Value => $Name,
-			# TTL   => 60 * 60 * 24, # 1 day
-   #  	);
+   #    $Result = $Self->{CacheObject}->Set(
+   #        Type  => 'FieldTree',
+            # Key   => 'RecursiveName_'.$Param{ItemID},
+            # Value => $Name,
+            # TTL   => 60 * 60 * 24, # 1 day
+   #    );
    #  }
-	return $Name;
+    return $Name;
 }
 
 
@@ -713,63 +723,63 @@ sub ItemRecursiveNamesHash {
             return;
         }
     }
-    
+
     my $Result;
    #  if ($Self->{CacheObject}) {
-   #  	$Result = $Self->{CacheObject}->Get(
-   #  		Type	=> 'FieldTree',
-			# Key => 'RecursiveNameHash_'.$Param{ItemID},    		
-   #  	);
+   #    $Result = $Self->{CacheObject}->Get(
+   #        Type    => 'FieldTree',
+            # Key => 'RecursiveNameHash_'.$Param{ItemID},           
+   #    );
    #  }
    #  if ($Result) {
-   #  	return $Result;
+   #    return $Result;
    #  }
 
     my $ItemID = $Param{ItemID};
     my $Name = '';
     my @Names = ();
     my $Counter = 0;
-	while (defined($ItemID) && $ItemID ne "-1" && $ItemID ne "" && $ItemID gt 0) 
-	{
-		my $Item = $Self->ItemGet(
-			ItemID => $ItemID,
-		);
-		my $b = $ItemID;
-		if (defined($Item->{ParentID}) && $Item->{ParentID} gt 0) {
-			#$Name = (defined($Item->{Name}) ?$Item->{Name} : '|') . ($ItemID+0 == -1 || $ItemID eq $Param{ItemID} ? '' : ' - ').$Name;
-			if (defined($Item->{Name})) {
-			    $Names[$Counter] = $Item->{Name};
-			    $Counter++;
-			}
-		}
-		$ItemID = $Item->{ParentID};
-		if (!$ItemID) {
+    while (defined($ItemID) && $ItemID ne "-1" && $ItemID ne "" && $ItemID gt 0) 
+    {
+        my $Item = $Self->ItemGet(
+            ItemID => $ItemID,
+        );
+        my $b = $ItemID;
+        if (defined($Item->{ParentID}) && $Item->{ParentID} gt 0) {
+            #$Name = (defined($Item->{Name}) ?$Item->{Name} : '|') . ($ItemID+0 == -1 || $ItemID eq $Param{ItemID} ? '' : ' - ').$Name;
+            if (defined($Item->{Name})) {
+                $Names[$Counter] = $Item->{Name};
+                $Counter++;
+            }
+        }
+        $ItemID = $Item->{ParentID};
+        if (!$ItemID) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "Bad parent item ID: $ItemID".Dumper($Item),
             );
         }
           
-		
-	};
-	
-	my $i;
-	my $Counter2 = 1;
-	my %NamesHash = ();
-	for ($i = $Counter-1; $i >= 0; $i--) {
-	    $NamesHash{"Label".$Counter2} = $Names[$i];
-	    $Counter2++;
-	}
+        
+    };
+    
+    my $i;
+    my $Counter2 = 1;
+    my %NamesHash = ();
+    for ($i = $Counter-1; $i >= 0; $i--) {
+        $NamesHash{"Label".$Counter2} = $Names[$i];
+        $Counter2++;
+    }
    #  if ($Self->{CacheObject}) {
-   #  	$Self->{CacheObject}->Set(
-   #  		Type  => 'FieldTree',
-			# Key   => 'RecursiveNameHash_'.$Param{ItemID},
-			# Value => \%NamesHash,
-			# TTL   => 60 * 60 * 24, # 1 day		
-   #  	);
+   #    $Self->{CacheObject}->Set(
+   #        Type  => 'FieldTree',
+            # Key   => 'RecursiveNameHash_'.$Param{ItemID},
+            # Value => \%NamesHash,
+            # TTL   => 60 * 60 * 24, # 1 day        
+   #    );
    #  }
-	
-	return \%NamesHash;
+    
+    return \%NamesHash;
 }
 
 
@@ -793,11 +803,11 @@ sub ItemUpdate {
     my ( $Self, %Param ) = @_;
 
     # if ($Self->{CacheObject}) {
-    # 	$Self->{CacheObject}->CleanUp(
-    # 		Type	=> 'FieldTree',
-    # 	);
+    #   $Self->{CacheObject}->CleanUp(
+    #       Type    => 'FieldTree',
+    #   );
     # }
-    	
+        
     # check needed stuff
     for my $Argument (qw(ItemID Name ValidID UserID ParentID)) {
         if ( !$Param{$Argument} ) {
@@ -845,7 +855,7 @@ sub ItemUpdate {
         $Class = $Row[0];
     }
 
-	if ( !$Class ) {
+    if ( !$Class ) {
         $Self->{LogObject}->Log(
             Priority => 'error',
             Message  => "Can't update item! FieldTree item not found in this class.",
@@ -878,7 +888,7 @@ sub ItemUpdate {
     }
 
 
-	# reset cache
+    # reset cache
     delete $Self->{Cache}->{ItemGet}->{Class}->{$Class}->{ $Param{ParentID} }->{ $Param{Name} };
     delete $Self->{Cache}->{ItemGet}->{ItemID}->{ $Param{ItemID} };
     delete $Self->{Cache}->{ItemList};
@@ -904,7 +914,7 @@ sub ItemUpdate {
 add a new field to tree leaf
 
     my $ItemID = $FieldTreeObject->FieldAdd(
-    	FieldTreeID        => 15,  			#Item leaf ftom field tree structure
+        FieldTreeID        => 15,           #Item leaf ftom field tree structure
         FieldType         => 'Text',
         Name          => 'Item Name',
         FriendlyName  => 'Friendly name',
@@ -924,9 +934,9 @@ sub FieldAdd {
     my ( $Self, %Param ) = @_;
 
     # if ($Self->{CacheObject}) {
-    # 	$Self->{CacheObject}->CleanUp(
-    # 		Type	=> 'FieldTree',
-    # 	);
+    #   $Self->{CacheObject}->CleanUp(
+    #       Type    => 'FieldTree',
+    #   );
     # }
 
     # check needed stuff
@@ -1004,8 +1014,8 @@ sub FieldAdd {
             . '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
         Bind => [
             \$Param{FieldType},   \$Param{Name},         \$Param{FriendlyName},
-            \$Param{Required},	    \$Param{FieldTreeID},	\$Param{Template},
-            \$Param{Target},		\$Param{Position}, 	\$Param{ValidID},
+            \$Param{Required},      \$Param{FieldTreeID},   \$Param{Template},
+            \$Param{Target},        \$Param{Position},  \$Param{ValidID},
             \$Param{Comment},     \$Param{Hidden},      \$Param{UserID},
             \$Param{UserID},
         ],
@@ -1035,11 +1045,11 @@ update a existing field
 
     my $True = $FieldTreeObject->ItemUpdate(
         FieldID        => 123,
-        Type 		  => Text,
+        Type          => Text,
         Name          => 'Item Name',
         FriendlyName  => 'Friendly name',
-        FieldType	  => 'Text',
-        Required	 => [true/false],
+        FieldType     => 'Text',
+        Required     => [true/false],
         ValidID       => 1,
         Hidden        => 0,
         Comment       => 'Comment',    # (optional)
@@ -1051,9 +1061,9 @@ update a existing field
 sub FieldUpdate {
     my ( $Self, %Param ) = @_;
     # if ($Self->{CacheObject}) {
-    # 	$Self->{CacheObject}->CleanUp(
-    # 		Type	=> 'FieldTree',
-    # 	);
+    #   $Self->{CacheObject}->CleanUp(
+    #       Type    => 'FieldTree',
+    #   );
     # }
 
     # check needed stuff
@@ -1242,7 +1252,7 @@ sub FieldGet {
 
     # check needed stuff
     if ( !$Param{FieldID} && ( !$Param{FieldTreeID} || !$Param{Name} ) ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get("Kernel::System::Log")->Log(
             Priority => 'error',
             Message  => 'Need ItemID OR FieldTreeID and Name!'
         );
@@ -1266,7 +1276,7 @@ sub FieldGet {
         $SQL .= 'field_tree_id = ? and name = ? ';
         push @BIND, ( \$Param{FieldTreeID}, \$Param{Name} );
     }
-	else {
+    else {
 
         # check if result is already cached
         return $Self->{Cache}->{FieldGet}->{FieldID}->{ $Param{FieldID} }
@@ -1359,71 +1369,95 @@ sub ValueSetAdd {
     my $ProblemType = '';
     
     foreach my $FieldID ( sort keys %{$Data}) {
-    	my $Field = $Self->FieldGet(
-			FieldID => $FieldID
-		);
-    	   		
-    	my $FieldDBType = $FieldDBTypes->{$Field->{FieldType}};
-    	if (defined($FieldDBType) && $FieldDBType ne 'none') {
-    	    
-	    	$DBObject->Do(
-    	        SQL  => 'INSERT INTO field_tree_value (field_id, field_tree_id, '
-    	        	   .' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, ?, ?)',
-    	        Bind => [
-    	            \$FieldID, \$Field->{FieldTreeID}, \$id, \$Data->{$FieldID},
-	            ],
-	        );
-		       
-	        if (($Field->{FieldType} eq "Select") && ($Data->{$FieldID} =~ /^-?\d+$/)) {
-        	my $Item = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ItemGet(
-	                ItemID  => $Data->{$FieldID},
-	            );
-	            push @HistoryLines, "\%\%$Field->{Name}\%\%$Item->{Name}";
-	        }
-	        else {
-	            push @HistoryLines, "\%\%$Field->{Name}\%\%$Data->{$FieldID}";
-	        }
-	        
-	        $ProblemType = $Field->{FieldTreeID};
-		}
+        my $Field = $Self->FieldGet(
+            FieldID => $FieldID
+        );
+                
+        my $FieldDBType = $FieldDBTypes->{$Field->{FieldType}};
+        if (defined($FieldDBType) && $FieldDBType ne 'none') {
+            
+            $DBObject->Do(
+                SQL  => 'INSERT INTO field_tree_value (field_id, field_tree_id, '
+                       .' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, ?, ?)',
+                Bind => [
+                    \$FieldID, \$Field->{FieldTreeID}, \$id, \$Data->{$FieldID},
+                ],
+            );
+
+            if (($Field->{FieldType} eq "Select") && ($Data->{$FieldID} =~ /^-?\d+$/)) {
+            my $Item = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ItemGet(
+                    ItemID  => $Data->{$FieldID},
+                );
+                push @HistoryLines, "\%\%$Field->{Name}\%\%$Item->{Name}";
+            }
+            else {
+                push @HistoryLines, "\%\%$Field->{Name}\%\%$Data->{$FieldID}";
+            }
+
+            $ProblemType = $Field->{FieldTreeID};
+        }
     }
-    
+
     push @HistoryLines, "\%\%Problem Type\%\%" . $ProblemType;
 
     # find existing item with same name
 
-	my $Result = {
-	 	HistoryLines => \@HistoryLines,
-	 	ValueSetID => $id,
+    my $Result = {
+        HistoryLines => \@HistoryLines,
+        ValueSetID => $id,
         ValueSet => $Data,
-	};
- 	
+    };
+
     # reset cache
     delete $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Result->{ValueSetID} } if $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Result->{ValueSetID} };
     delete $Self->{Cache}->{ValueSetList} if $Self->{Cache}->{ValueSetList};
-    
-	return $Result;
+
+    return $Result;
 }
 
 
 sub GetFieldsValues {
-	my ( $Self, %Param ) = @_;
-	
-	my $FieldTreeID = $Param{FieldTreeID};
-    
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
-   	my $FieldIDList = $Self->FieldList(
+    my ( $Self, %Param ) = @_;
+
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+
+    my $FieldTreeID = $Param{FieldTreeID};
+
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my $FieldIDList = $Self->FieldList(
         FieldTreeID => $FieldTreeID,
         Valid => 1,
     );
-    
-	my $Result = { };
-    
+
+    my $Result = { };
+
     for my $FieldID ( keys %{$FieldIDList} ) {
-		$Result->{$FieldID} = $Param{ParamObject}->GetParam(Param => $Param{Prefix} . '_Field_' . $FieldID);
+        if (!defined ($Result->{$FieldID} = $Param{ParamObject}->GetParam(Param => $Param{Prefix} . '_Field_' . $FieldID))) {
+            my %Date;
+            $Date{"Prefix"} = $Param{ParamObject}->GetParam(Param => 'Field_' . $FieldID);
+            $Date{"Minute"} = $Param{ParamObject}->GetParam(Param => 'Field_' . $FieldID. "Minute");
+            $Date{"Hour"} = $Param{ParamObject}->GetParam(Param => 'Field_' . $FieldID. "Hour");
+            $Date{"Day"} = $Param{ParamObject}->GetParam(Param => 'Field_' . $FieldID. "Day");
+            $Date{"Month"} = $Param{ParamObject}->GetParam(Param => 'Field_' . $FieldID. "Month");
+            $Date{"Year"} = $Param{ParamObject}->GetParam(Param => 'Field_' . $FieldID. "Year");
+
+            if (defined $Date{"Minute"} &&
+                defined $Date{"Hour"} &&
+                defined $Date{"Day"} &&
+                defined $Date{"Month"} &&
+                defined $Date{"Year"}
+            ){
+                my $TimeStamp = $TimeObject->SystemTime2TimeStamp(
+                    SystemTime => $TimeObject->Date2SystemTime(
+                        %Date,
+                    ),
+                );
+                warn $TimeStamp;
+            }
+        }
     }
-	
-	return $Result; 
+
+    return $Result;
 }
 
 =item ValueSetFromPOST()
@@ -1451,37 +1485,37 @@ sub ValueSetFromPOST {
     }
 
     my $FieldTreeID = $Param{FieldTreeID};
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
-	my $FieldIDList = $Self->FieldList(
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my $FieldIDList = $Self->FieldList(
                FieldTreeID => $FieldTreeID,
                Valid => 1,
     );
-          		
-	my $Data = { }; # Populate data from provided param;
-	for my $FieldID ( keys %{$FieldIDList} ) {
-			
-		my $Field = $Self->FieldGet(
-        	FieldID => $FieldID,
-		);
-			
-		if ($Field->{FieldType} eq 'DateTime') {
-			my @Date =() ;
-			for (qw[Year Month Day Hour Minute]) {
-				push @Date, $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID.$_ );
-			}
-		
-    		$Data->{$FieldID} = sprintf("%04d-%02d-%02d %02d:%02d", @Date).":59";
-		}
-		elsif ($FieldDBTypes->{$Field->{FieldType}} eq 'none') {
-		}
-		else {
-			$Data->{$FieldID} = $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID );
-		}
-	}
- 
+
+    my $Data = { }; # Populate data from provided param;
+    for my $FieldID ( keys %{$FieldIDList} ) {
+
+        my $Field = $Self->FieldGet(
+            FieldID => $FieldID,
+        );
+
+        if ($Field->{FieldType} eq 'DateTime') {
+            my @Date =() ;
+            for (qw[Year Month Day Hour Minute]) {
+                push @Date, $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID.$_ );
+            }
+
+            $Data->{$FieldID} = sprintf("%04d-%02d-%02d %02d:%02d", @Date).":59";
+        }
+        elsif ($FieldDBTypes->{$Field->{FieldType}} eq 'none') {
+        }
+        else {
+            $Data->{$FieldID} = $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID );
+        }
+    }
+
      # save to database
      if ($Param{OnlyReturnData}) {
-     	return $Data;
+        return $Data;
      }
      my $Result;
      if ( $Param{ValueSetID} eq 'NEW' ) {
@@ -1491,12 +1525,12 @@ sub ValueSetFromPOST {
      }
      else {
         $Result = $Self->ValueSetUpdate(
-    	     Data => $Data,
-	         ValueSetID => $Param{ValueSetID},
+             Data => $Data,
+             ValueSetID => $Param{ValueSetID},
         );
      }
 
-	return $Result;
+    return $Result;
 
 }
 
@@ -1508,22 +1542,21 @@ sub ValueSetValidate {
     my $FieldTreeID = $Param{FieldTreeID};
     my $Error = "";
     if (!$FieldTreeID) {
-    	$Error .= 'FieldTree not set';
+        $Error .= 'FieldTree not set';
     }
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
-	my $FieldIDList = $Self->FieldList(
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my $FieldIDList = $Self->FieldList(
                FieldTreeID => $FieldTreeID,
                Valid => 1,
            );
-          		
-	my $Data = { }; # Populate data from provided param;
-	for my $FieldID ( keys %{$FieldIDList} ) {
-			
-			my $Field = $Self->FieldGet(
+
+    my $Data = { }; # Populate data from provided param;
+    for my $FieldID ( keys %{$FieldIDList} ) {
+            my $Field = $Self->FieldGet(
                 FieldID => $FieldID,
-			);
-			
-			if ($Field->{Required}) {
+            );
+
+            if ($Field->{Required}) {
                 if ($Field->{FieldType} eq 'DateTime') {
                     my $Month = $Self->{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID.'Month' );
                     my $Day = $Self->{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID.'Day' );
@@ -1532,22 +1565,21 @@ sub ValueSetValidate {
                         0 => {1 => 31, 2 => 29, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 =>30, 10 => 31, 11 => 30, 12 => 31,},
                         1 => {1 => 31, 2 => 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 =>30, 10 => 31, 11 => 30, 12 => 31,},
                         2 => {1 => 31, 2 => 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 =>30, 10 => 31, 11 => 30, 12 => 31,},
-                        3 => {1 => 31, 2 => 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 =>30, 10 => 31, 11 => 30, 12 => 31,},                         
-                    );                    
+                        3 => {1 => 31, 2 => 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 =>30, 10 => 31, 11 => 30, 12 => 31,},
+                    );
                     if ($Day > $DaysCount{$Year % 4}{$Month}) {
                         $Error .= "Field $Field->{Name} has invalid date! ";
                     }
-                    
+
                 } else {
                     if ($Self->{ParamObject}->GetParam( Param => $Param{Prefix}.$FieldID ) eq "") {
                         $Error .= "Field $Field->{Name} is required! ";
                     }
                 }
-			}
-	}
- 
-	return $Error;
+            }
+    }
 
+    return $Error;
 }
 
 
@@ -1578,10 +1610,10 @@ sub ValueSetUpdate {
     
     my $Data = $Param{Data};
     my $Result;
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
 
     my $ValueSet = $Self->ValueSetGet(
-    	ValueSetID => $Param{ValueSetID},
+        ValueSetID => $Param{ValueSetID},
     );
     
     my @HistoryLines;
@@ -1590,63 +1622,63 @@ sub ValueSetUpdate {
     my $Changed = 0;
     
     foreach  ( sort keys %{$Data}) {
-    	if ($ValueSet->{$_} ne $Data->{$_}) {
-    		$Changed = 1;
-    	}
+        if ($ValueSet->{$_} ne $Data->{$_}) {
+            $Changed = 1;
+        }
     }
     foreach  ( sort keys %{$ValueSet}) {
-    	if ($ValueSet->{$_} ne $Data->{$_}) {
-    		$Changed = 1;
-    	}
+        if ($ValueSet->{$_} ne $Data->{$_}) {
+            $Changed = 1;
+        }
     }
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
-	if ($Changed) {
-	   	$DBObject->Do(
-			        SQL => 'DELETE FROM field_tree_value WHERE value_set_id = ?',
-			        Bind => [
-			            \$Param{ValueSetID}
-			        ]);
-	    foreach my $FieldID ( sort keys %{$Data}) {
-			my $Field = $Self->FieldGet(
-	            FieldID => $FieldID,
-			);
-	    	my $FieldDBType = $FieldDBTypes->{$Field->{FieldType}};
-	    	if (defined($FieldDBType) && $FieldDBType ne 'none')	{
-		    	$DBObject->Do(
-			        SQL => 'INSERT INTO field_tree_value (field_id, field_tree_id, '.
-			        			' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, ?, ?)',
-			        Bind => [
-			            \$FieldID, \$Field->{FieldTreeID}, \$Param{ValueSetID}, \$Data->{$FieldID},
-			        ]);
-			    if (!exists $ValueSet->{$FieldID} || $ValueSet->{$FieldID} ne $Data->{$FieldID}) {
-			    	if (($Field->{FieldType} eq "Select") && ($Data->{$FieldID} =~ /^-?\d+$/)) {
-		                my $Item = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ItemGet(
-		                    ItemID  => $Data->{$FieldID},
-		                );        
-		                push @HistoryLines, "\%\%$Field->{Name}\%\%$Item->{Name}";
-		            } else {
-		                push @HistoryLines, "\%\%$Field->{Name}\%\%$Data->{$FieldID}";
-		            }
-		            $ProblemType = $Field->{FieldTreeID};         
-		       	}
-			}
-	    }
-	    if ($ProblemType) { 
-	    	push @HistoryLines, "\%\%Problem Type\%\%" . $ProblemType; 
-	    }
-	}
+    if ($Changed) {
+        $DBObject->Do(
+                    SQL => 'DELETE FROM field_tree_value WHERE value_set_id = ?',
+                    Bind => [
+                        \$Param{ValueSetID}
+                    ]);
+        foreach my $FieldID ( sort keys %{$Data}) {
+            my $Field = $Self->FieldGet(
+                FieldID => $FieldID,
+            );
+            my $FieldDBType = $FieldDBTypes->{$Field->{FieldType}};
+            if (defined($FieldDBType) && $FieldDBType ne 'none')    {
+                $DBObject->Do(
+                    SQL => 'INSERT INTO field_tree_value (field_id, field_tree_id, '.
+                                ' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, ?, ?)',
+                    Bind => [
+                        \$FieldID, \$Field->{FieldTreeID}, \$Param{ValueSetID}, \$Data->{$FieldID},
+                    ]);
+                if (!exists $ValueSet->{$FieldID} || $ValueSet->{$FieldID} ne $Data->{$FieldID}) {
+                    if (($Field->{FieldType} eq "Select") && ($Data->{$FieldID} =~ /^-?\d+$/)) {
+                        my $Item = $Kernel::OM->Get('Kernel::System::GeneralCatalog')->ItemGet(
+                            ItemID  => $Data->{$FieldID},
+                        );        
+                        push @HistoryLines, "\%\%$Field->{Name}\%\%$Item->{Name}";
+                    } else {
+                        push @HistoryLines, "\%\%$Field->{Name}\%\%$Data->{$FieldID}";
+                    }
+                    $ProblemType = $Field->{FieldTreeID};         
+                }
+            }
+        }
+        if ($ProblemType) { 
+            push @HistoryLines, "\%\%Problem Type\%\%" . $ProblemType; 
+        }
+    }
 
-	$Result = {
-	 	HistoryLines => \@HistoryLines,
-	 	ValueSetID =>  $Param{ValueSetID},
+    $Result = {
+        HistoryLines => \@HistoryLines,
+        ValueSetID =>  $Param{ValueSetID},
         ValueSet => $Data,
-	};
+    };
 
     # reset cache
     delete $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
     delete $Self->{Cache}->{ValueSetList};
     
-	return $Result;
+    return $Result;
 }
 
 
@@ -1673,11 +1705,11 @@ sub ValueSetGet {
         );
         return;
     }
-    
+
     return if $Param{ValueSetID} =~ /new/i;
-    
+
     if (exists $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} }) {
-    	return  $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
+        return  $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
     }
 
 
@@ -1730,7 +1762,7 @@ sub ValueSetGetFieldTreeID {
     }
     
     if (exists $Self->{Cache}->{ValueSetGetFieldTreeID}->{FieldTree}->{ $Param{ValueSetID} }) {
-    	return  $Self->{Cache}->{ValueSetGetFieldTreeID}->{FieldTree}->{ $Param{ValueSetID} };
+        return  $Self->{Cache}->{ValueSetGetFieldTreeID}->{FieldTree}->{ $Param{ValueSetID} };
     }
 
 
@@ -1750,7 +1782,7 @@ sub ValueSetGetFieldTreeID {
     my $Data;
     my $Field;
     while ( my @Row = $DBObject->FetchrowArray() ) {
-	    $Self->{Cache}->{ValueSetGetFieldTreeID}->{FieldTreeID}->{ $Param{ValueSetID} } = $Row[0];
+        $Self->{Cache}->{ValueSetGetFieldTreeID}->{FieldTreeID}->{ $Param{ValueSetID} } = $Row[0];
         $Data = $Row[0];
     }
 
@@ -1790,8 +1822,8 @@ sub TreeValueSetAdd {
     
     # EPIC FAIL !
     #$DBObject->Prepare(
-	#   SQL   => 'SELECT MAX(value_set_id) FROM field_tree_value WHERE 1 ',
-	#);
+    #   SQL   => 'SELECT MAX(value_set_id) FROM field_tree_value WHERE 1 ',
+    #);
     #my $id;
     #while ( my @Row = $DBObject->FetchrowArray() ) {
     #      $id= $Row[0];
@@ -1800,46 +1832,46 @@ sub TreeValueSetAdd {
     
     my $Data = $Param{Data};
     my $BranchList = $Self->ItemList(
-    	Class => $Param{Class},
+        Class => $Param{Class},
     );
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
-   	my $HistoryName = '';
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my $HistoryName = '';
 
-	#PROBABLY UNNECESSERY
-	#$DBObject->Do(
-	#	        SQL => 'INSERT INTO field_tree_value ('.
-	#	        			' value_set_id) VALUES (?)',
-	#	        Bind => [
-	#	            \$id, 
-	#	        ]);
+    #PROBABLY UNNECESSERY
+    #$DBObject->Do(
+    #           SQL => 'INSERT INTO field_tree_value ('.
+    #                       ' value_set_id) VALUES (?)',
+    #           Bind => [
+    #               \$id, 
+    #           ]);
 
     foreach my $FieldTreeID ( sort keys %{$BranchList}) {
-    	my $FieldDBType = 'int';
-    	if ($Data->{$FieldTreeID}) {
-	    	$DBObject->Do(
-		        SQL => 'INSERT INTO field_tree_value (field_tree_id, '.
-		        			' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, 1)',
-		        Bind => [
-		            \$FieldTreeID, 
-		            \$id, 
-		        ]);
-		   	$HistoryName .= $FieldTreeID.',';
-		}
+        my $FieldDBType = 'int';
+        if ($Data->{$FieldTreeID}) {
+            $DBObject->Do(
+                SQL => 'INSERT INTO field_tree_value (field_tree_id, '.
+                            ' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, 1)',
+                Bind => [
+                    \$FieldTreeID, 
+                    \$id, 
+                ]);
+            $HistoryName .= $FieldTreeID.',';
+        }
     }
 
-	my @HistoryLines= ("\%\%Problem Source\%\%$HistoryName");
+    my @HistoryLines= ("\%\%Problem Source\%\%$HistoryName");
 
     # find existing item with same name
 
-	my $Result = {
-	 	HistoryLines => \@HistoryLines,
-	 	ValueSetID => $id,
-	};
+    my $Result = {
+        HistoryLines => \@HistoryLines,
+        ValueSetID => $id,
+    };
 
     # reset cache
     delete $Self->{Cache}->{ValueSetList};
     
-	return $Result;
+    return $Result;
 }
 
 
@@ -1868,43 +1900,43 @@ sub TreeValueSetFromPOST {
         }
     }
 
-	my $ItemList = $Self->ItemList(
+    my $ItemList = $Self->ItemList(
                Class => $Param{Class},
                Valid => 1,
            );
 
-	my $Data; # Populate data from provided param;
-	my $FieldTreeLoaded = 0;
-	for my $ItemID ( sort { $ItemList->{$a} cmp $ItemList->{$b} } keys %{$ItemList} ) {
-			$Data->{$ItemID} = $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$ItemID ); #FIXED $Self-> CHANGED TO $Param 
-			if (defined $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$ItemID )) { #FIXED $Self-> CHANGED TO $Param 			
-				$FieldTreeLoaded = 1;
-			}
-		}
+    my $Data; # Populate data from provided param;
+    my $FieldTreeLoaded = 0;
+    for my $ItemID ( sort { $ItemList->{$a} cmp $ItemList->{$b} } keys %{$ItemList} ) {
+            $Data->{$ItemID} = $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$ItemID ); #FIXED $Self-> CHANGED TO $Param 
+            if (defined $Param{ParamObject}->GetParam( Param => $Param{Prefix}.$ItemID )) { #FIXED $Self-> CHANGED TO $Param            
+                $FieldTreeLoaded = 1;
+            }
+        }
 
      # save to database
     my $Result;
     if ($FieldTreeLoaded || $Param{ValueSetID} eq 'NEW' ) { # save /modify only if the tree was loaded
-	     if ( $Param{ValueSetID} eq 'NEW' ) {
-	         $Result = $Self->TreeValueSetAdd(
-	             Data 	=> $Data,
-				 Class 	=> $Param{Class}, #FIXED NEEDED CLASS
-	         );
-	     }
-	     else {
-	        $Result = $Self->TreeValueSetUpdate(
-	          Data => $Data,
-	          ValueSetID => $Param{ValueSetID},
-	        );
-	     }
+         if ( $Param{ValueSetID} eq 'NEW' ) {
+             $Result = $Self->TreeValueSetAdd(
+                 Data   => $Data,
+                 Class  => $Param{Class}, #FIXED NEEDED CLASS
+             );
+         }
+         else {
+            $Result = $Self->TreeValueSetUpdate(
+              Data => $Data,
+              ValueSetID => $Param{ValueSetID},
+            );
+         }
     }
     else {
-    	 $Kernel::OM->Get('Kernel::System::Log')->Log(
+         $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "TreeValueSetFromPOST: Tree was not loaded!",
             );
     }
-	return $Result;
+    return $Result;
 }
 
 
@@ -1934,75 +1966,75 @@ sub TreeValueSetUpdate {
     }
     my $CurrentMaxID = $Param{ValueSetID};
     my $Data = $Param{Data};
-   	my $FieldDBTypes = $Self->FieldTypeDBTypes();
-   	my @HistoryLines= ();
+    my $FieldDBTypes = $Self->FieldTypeDBTypes();
+    my @HistoryLines= ();
     
-   	my $HistoryName = '';
+    my $HistoryName = '';
 
     my $ValueSet = $Self->TreeValueSetGet(
-    	ValueSetID => $Param{ValueSetID},
+        ValueSetID => $Param{ValueSetID},
     );
     
     my $Changed = 0;
 
     
     foreach ( sort keys %{$Data}) {
-    	if (($ValueSet->{$_} && !$Data->{$_}) || (!$ValueSet->{$_} && $Data->{$_}) ) {
-    		$Changed = 1;
-    	}
+        if (($ValueSet->{$_} && !$Data->{$_}) || (!$ValueSet->{$_} && $Data->{$_}) ) {
+            $Changed = 1;
+        }
     }
     foreach ( sort keys %{$ValueSet}) {
-    	if (($ValueSet->{$_} && !$Data->{$_}) || (!$ValueSet->{$_} && $Data->{$_}) ) {
-    		$Changed = 1;
-    	}
+        if (($ValueSet->{$_} && !$Data->{$_}) || (!$ValueSet->{$_} && $Data->{$_}) ) {
+            $Changed = 1;
+        }
     }
     
     
 
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
-	if ($Changed) {
-	   	$DBObject->Do(
-			        SQL => 'DELETE FROM field_tree_value WHERE value_set_id = ?',
-			        Bind => [
-			            \$CurrentMaxID, 
-			        ]);
-	   	$DBObject->Do(
-			        SQL => 'INSERT INTO field_tree_value ('.
-			        			' value_set_id) VALUES (?)',
-			        Bind => [
-			            \$CurrentMaxID, 
-			        ]);
-	
-	    foreach my $FieldTreeID ( sort keys %{$Data}) {
-	    	my $FieldDBType = 'int';
-	    	if ($Data->{$FieldTreeID}) {
-		    	$DBObject->Do(
-			        SQL => 'INSERT INTO field_tree_value (field_tree_id, '.
-			        			' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, 1)',
-			        Bind => [
-			            \$FieldTreeID, 
-			            \$CurrentMaxID, 
-			        ]);
-			   	$HistoryName .= $FieldTreeID.',';
-			}
-	    }
-		@HistoryLines = ("\%\%Problem Reason\%\%$HistoryName");         
-	    delete $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
-	    delete $Self->{Cache}->{ValueSetList};
-	}
-		    
-	
-	my $Result = {
-	 	HistoryLines => \@HistoryLines,
-	 	ValueSetID => $CurrentMaxID,
-	};
+    if ($Changed) {
+        $DBObject->Do(
+                    SQL => 'DELETE FROM field_tree_value WHERE value_set_id = ?',
+                    Bind => [
+                        \$CurrentMaxID, 
+                    ]);
+        $DBObject->Do(
+                    SQL => 'INSERT INTO field_tree_value ('.
+                                ' value_set_id) VALUES (?)',
+                    Bind => [
+                        \$CurrentMaxID, 
+                    ]);
+    
+        foreach my $FieldTreeID ( sort keys %{$Data}) {
+            my $FieldDBType = 'int';
+            if ($Data->{$FieldTreeID}) {
+                $DBObject->Do(
+                    SQL => 'INSERT INTO field_tree_value (field_tree_id, '.
+                                ' value_set_id, value_'.$FieldDBType.') VALUES (?, ?, 1)',
+                    Bind => [
+                        \$FieldTreeID, 
+                        \$CurrentMaxID, 
+                    ]);
+                $HistoryName .= $FieldTreeID.',';
+            }
+        }
+        @HistoryLines = ("\%\%Problem Reason\%\%$HistoryName");         
+        delete $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
+        delete $Self->{Cache}->{ValueSetList};
+    }
+            
+    
+    my $Result = {
+        HistoryLines => \@HistoryLines,
+        ValueSetID => $CurrentMaxID,
+    };
 
     # find existing item with same name
 
 
     # reset cache
     
-	return $Result;
+    return $Result;
 }
 
 =item ValueSetCopy()
@@ -2042,9 +2074,9 @@ sub ValueSetCopy {
         );
         return;
     }
-	
+    
     # cleanup any existing data in target valueset
-	my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
     return if !$DBObject->Do(
         SQL => 'DELETE FROM field_tree_value WHERE value_set_id = ?',
         Bind => [ \$Param{TargetValueSetID}, ], 
@@ -2089,7 +2121,7 @@ sub ValueSetCopy {
         }
 
         for (@HistoryLines) {
-			my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+            my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
             $TicketObject->HistoryAdd(
                 TicketID     => $Param{TicketID},
                 CreateUserID => $Param{UserID},
@@ -2115,7 +2147,6 @@ Return
 # Deprecated or smth
 #sub RulesPreProcess {
 #    my ( $Self, %Param ) = @_;
-#	
 #
 #    # check needed stuff
 #    for my $Argument (qw(TicketData)) {
@@ -2128,36 +2159,35 @@ Return
 #        }
 #    }
 #    my $TicketData = $Param{TicketData};
-#    
+#
 #    my $Rules = $Self->FieldList(
-#    	FieldTreeID => $TicketData->{ProblemTypeID},
-#    	Valid => 1,
-#    	Class => $Self->{ConfigObject}->Get("FieldTree::ProblemReasonClass"),
+#       FieldTreeID => $TicketData->{ProblemTypeID},
+#       Valid => 1,
+#       Class => $Self->{ConfigObject}->Get("FieldTree::ProblemReasonClass"),
 #    );
-#    
+#
 #    foreach my $RuleID ( sort keys %{$Rules}) {
-#    	my $Rule = $Self->FieldGet(
-#    		FieldID =>$RuleID
-#    	);
+#       my $Rule = $Self->FieldGet(
+#           FieldID =>$RuleID
+#       );
 #        # Although we set QueueID throgh JavaScript (for AKSProblemTicketProblem view),
 #        # this might also be used from cron script for processing webcare tickets,
-#        # so we make sure that we always set correct QueueID here too    	
-#    	if ($Rule->{FieldType} eq "RuleEscalateTo") {
-#    		$TicketData->{QueueID} = $Rule->{Template};
-#    	}
-#    	elsif ($Rule->{FieldType} eq "RuleSLA") {
-#    		$TicketData->{SLAID} = $Rule->{Template};
-#    	}
+#        # so we make sure that we always set correct QueueID here too      
+#       if ($Rule->{FieldType} eq "RuleEscalateTo") {
+#           $TicketData->{QueueID} = $Rule->{Template};
+#       }
+#       elsif ($Rule->{FieldType} eq "RuleSLA") {
+#           $TicketData->{SLAID} = $Rule->{Template};
+#       }
 #    }
-#    
-#    
+#
+#
 #    return $TicketData;
-#    
-#}	
+#}
 
 sub RulesPostProcess {
     my ( $Self, %Param ) = @_;
-	
+
     # check needed stuff
     for my $Argument (qw(TicketID UserID ValueSetID)) {
         if ( !$Param{$Argument} ) {
@@ -2170,25 +2200,25 @@ sub RulesPostProcess {
     }
     my $Rules;
     $Rules = $Self->FieldList(
-    	FieldTreeID => $Self->ValueSetGetFieldTreeID( ValueSetID => $Param{ValueSetID} ),
-    	Valid => 1,
+        FieldTreeID => $Self->ValueSetGetFieldTreeID( ValueSetID => $Param{ValueSetID} ),
+        Valid => 1,
     );
-	my $ValueSet = $Self->ValueSetGet(
-		ValueSetID => $Param{ValueSetID},
-	);
-    
+    my $ValueSet = $Self->ValueSetGet(
+        ValueSetID => $Param{ValueSetID},
+    );
+
     foreach my $RuleID ( sort keys %{$Rules} ) {
-    	my $Rule = $Self->FieldGet(
-    		FieldID => $RuleID
-    	);
-    	
-    	#implement any rules here
-    	if ($Rule->{FieldType} eq 'SomeRule') {
+        my $Rule = $Self->FieldGet(
+            FieldID => $RuleID
+        );
+
+        #implement any rules here
+        if ($Rule->{FieldType} eq 'SomeRule') {
         }
     }
-    
-    return 1;    
-}	
+
+    return 1;
+}
 
 sub TreeValueSetGet {
     my ( $Self, %Param ) = @_;
@@ -2201,9 +2231,9 @@ sub TreeValueSetGet {
         );
         return;
     }
-    
+
     if (exists $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} }) {
-    	return  $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
+        return  $Self->{Cache}->{ValueSetGet}->{ValueSetID}->{ $Param{ValueSetID} };
     }
 
     # create sql string
@@ -2262,18 +2292,18 @@ sub OpenedItemsList {
     while ( my @Row = $DBObject->FetchrowArray() ) {
         my $ID = $Row[0];
         if ($ID) {
-	        my @parents = @{$Self->ItemParentsList(
-	        	ItemID => $ID,
-	        )};
-	        push (@Data, @parents);
-	    }
+            my @parents = @{$Self->ItemParentsList(
+                ItemID => $ID,
+            )};
+            push (@Data, @parents);
+        }
     }
 
-	for my $CycleID ( @Data ) {
-		$DataHref->{$CycleID} = 1;
-	}
-	
-	return $DataHref;
+    for my $CycleID ( @Data ) {
+        $DataHref->{$CycleID} = 1;
+    }
+    
+    return $DataHref;
 }
 
 sub TreeOpenedItemsList {
@@ -2306,21 +2336,21 @@ sub TreeOpenedItemsList {
     while ( my @Row = $DBObject->FetchrowArray() ) {
         my $ID = $Row[0];
         my @parents = @{$Self->ItemParentsList(
-        	ItemID => $ID,
+            ItemID => $ID,
         )};
         push (@Data, @parents);
     }
 
-	for my $CycleID ( @Data ) {
-		$DataHref->{$CycleID} = 1;
-	}
-	
-	return $DataHref;
+    for my $CycleID ( @Data ) {
+        $DataHref->{$CycleID} = 1;
+    }
+    
+    return $DataHref;
 }
 
 sub ItemParentsList {
     my ( $Self, %Param ) = @_;
-	my @dat = ();
+    my @dat = ();
    # check needed stuff
     for my $Argument (qw(ItemID)) {
         if ( !$Param{$Argument} ) {
@@ -2332,17 +2362,17 @@ sub ItemParentsList {
         }
     }
     my $ItemID = $Param{ItemID};
-	my $Item = $Self->ItemGet(
-		ItemID => $ItemID,
-	);
-	if ($Item->{ParentID} > 0) {
-	    @dat = @{$Self->ItemParentsList(
-	    	ItemID => $Item->{ParentID},
-	    )};
-	}
+    my $Item = $Self->ItemGet(
+        ItemID => $ItemID,
+    );
+    if ($Item->{ParentID} > 0) {
+        @dat = @{$Self->ItemParentsList(
+            ItemID => $Item->{ParentID},
+        )};
+    }
    
- 	push @dat, $ItemID;
- 	return \@dat;
+    push @dat, $ItemID;
+    return \@dat;
 }
 
 # Mixin for functions which require Class and ItemID
@@ -2356,7 +2386,7 @@ sub _ClassOrItemIDMixin {
     my ( $Self, %Params ) = @_;
     my $Param = $Params{Param};
 
-	my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
 
     if (!$Param->{Class} && !$Param->{ItemID}) {
         $LogObject->Log(
@@ -2419,27 +2449,27 @@ sub JSON {
     my $OpenedItems = {};
 
     if (defined($Param{OpenedItems})) {
-    	$OpenedItems = $Param{OpenedItems};
+        $OpenedItems = $Param{OpenedItems};
     }
     elsif (defined($Param{ValueSetID}) && $Param{ValueSetID} ne "NEW") {
-    	$OpenedItems = $Self->OpenedItemsList(
-    		ValueSetID => $Param{ValueSetID},
-    	);
-    	if ($Param{FieldTreeID}){
-    		for (@{$Self->ItemParentsList( ItemID => $Param{FieldTreeID})}) {
-		    	$OpenedItems->{$_} = 1;
-		    }
-    	}
+        $OpenedItems = $Self->OpenedItemsList(
+            ValueSetID => $Param{ValueSetID},
+        );
+        if ($Param{FieldTreeID}){
+            for (@{$Self->ItemParentsList( ItemID => $Param{FieldTreeID})}) {
+                $OpenedItems->{$_} = 1;
+            }
+        }
     }
 
-	my $ItemsOn = $Self->_JSONInternal(	%Param );
-	$Self->_TreeWalker(
-		Items => $ItemsOn,
-		OpenedItems => $OpenedItems,
-		ShowAllCheckboxes => $Param{ShowAllCheckboxes},			
-	);
-	
-	return  @$ItemsOn;
+    my $ItemsOn = $Self->_JSONInternal( %Param );
+    $Self->_TreeWalker(
+        Items => $ItemsOn,
+        OpenedItems => $OpenedItems,
+        ShowAllCheckboxes => $Param{ShowAllCheckboxes},         
+    );
+    
+    return  @$ItemsOn;
 }
 
 
@@ -2453,38 +2483,38 @@ sub TreeJSON {
    # check needed stuff
     $Self->_ClassOrItemIDMixin( Param => \%Param );
 
-	my $ValueSet;
+    my $ValueSet;
     if (defined($Param{ValueSet})) {
-    	$ValueSet = $Param{ValueSet};
+        $ValueSet = $Param{ValueSet};
     }
     if (defined($Param{ValueSetID})) {
 
-   		
-   		$ValueSet = $Self->TreeValueSetGet(
-   			ValueSetID => $Param{ValueSetID}
-   		);
+        
+        $ValueSet = $Self->TreeValueSetGet(
+            ValueSetID => $Param{ValueSetID}
+        );
 
     }
     
     my $OpenedItems;
     if (defined($Param{OpenedItems})) {
-    	$OpenedItems = $Param{OpenedItems};
+        $OpenedItems = $Param{OpenedItems};
     }
     else {
-    	$OpenedItems = $Self->TreeOpenedItemsList(
-    		ValueSetID => $Param{ValueSetID},
-    	);
+        $OpenedItems = $Self->TreeOpenedItemsList(
+            ValueSetID => $Param{ValueSetID},
+        );
     }
 
-	my $ItemsOn = $Self->_JSONInternal(	%Param );
-	$Self->_TreeWalker(
-		Items => $ItemsOn,
-		OpenedItems => $OpenedItems,
-		ValueSet => $ValueSet, 
-		ShowAllCheckboxes => 0,			
-	);
-	
-	return @$ItemsOn;
+    my $ItemsOn = $Self->_JSONInternal( %Param );
+    $Self->_TreeWalker(
+        Items => $ItemsOn,
+        OpenedItems => $OpenedItems,
+        ValueSet => $ValueSet, 
+        ShowAllCheckboxes => 0,         
+    );
+    
+    return @$ItemsOn;
 }
 
 # Generated html <select> tag for provided 'checkbox-only' fieldtree
@@ -2508,12 +2538,12 @@ sub TreeAsSelection {
 
     my $ValueSet;
     if (defined($Param{ValueSet})) {
-    	$ValueSet = $Param{ValueSet};
+        $ValueSet = $Param{ValueSet};
     }
     if (defined($Param{ValueSetID})) {
-   		$ValueSet = $Self->TreeValueSetGet(
-   			ValueSetID => $Param{ValueSetID}
-   		);
+        $ValueSet = $Self->TreeValueSetGet(
+            ValueSetID => $Param{ValueSetID}
+        );
     }
     # figure out selected value (can be only one)
     for (keys %$ValueSet) {
@@ -2572,19 +2602,19 @@ sub _BuildOptionTree {
 # Recursive tree walker, that walks through cached recursive array of hashes
 sub _TreeWalker {
     my ( $Self, %Param ) = @_;
-	foreach (@{$Param{Items}}) {
-		$_->{open} = $Param{OpenedItems}->{$_->{id}} ? "true" : "";
-		$_->{checkbox} = (($_->{canhavechildren}) && !$Param{ShowAllCheckboxes})  ? "" : "true";
-		if ($Param{ValueSet}) {
-   			$_->{check} = $Param{ValueSet}->{$_->{id}} ? "1" : "0";
-		}
-		$Self->_TreeWalker(
-			Items => $_->{items},
-			ValueSet => $Param{ValueSet},
-			OpenedItems => $Param{OpenedItems},
-			ShowAllCheckboxes => $Param{ShowAllCheckboxes},			
-		);
-	}
+    foreach (@{$Param{Items}}) {
+        $_->{open} = $Param{OpenedItems}->{$_->{id}} ? "true" : "";
+        $_->{checkbox} = (($_->{canhavechildren}) && !$Param{ShowAllCheckboxes})  ? "" : "true";
+        if ($Param{ValueSet}) {
+            $_->{check} = $Param{ValueSet}->{$_->{id}} ? "1" : "0";
+        }
+        $Self->_TreeWalker(
+            Items => $_->{items},
+            ValueSet => $Param{ValueSet},
+            OpenedItems => $Param{OpenedItems},
+            ShowAllCheckboxes => $Param{ShowAllCheckboxes},         
+        );
+    }
 }
 
 
@@ -2593,7 +2623,7 @@ sub _JSONInternal {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-	my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
     for my $Argument (qw(Class ItemID)) {
             if ( !$Param{$Argument} ) {
             $Self->{LogObject}->Log(
@@ -2606,13 +2636,13 @@ sub _JSONInternal {
     $Param{UseHash} = $Param{UseHash} || 0; # output hash (ItemID as keys) instead of array
     $Param{UseFriendlyName} = $Param{UseFriendlyName} || 0; # get friendly names instead of simple ones
 
-  	my $Result;
+    my $Result;
     my $CacheKey = "JSON_$Param{ItemID}_$Param{Class}_$Param{UseHash}";
     if ($Self->{CacheObject}  && !defined($Param{DoNotCache})) {
-    	$Result = $Self->{CacheObject}->Get(
-    		Type => 'FieldTree',
-			Key  => $CacheKey,
-    	);
+        $Result = $Self->{CacheObject}->Get(
+            Type => 'FieldTree',
+            Key  => $CacheKey,
+        );
         return $Result if $Result;
     }
     $Result = $Param{UseHash} ? {} : [];
@@ -2642,7 +2672,7 @@ sub _JSONInternal {
         );
         my $ChildrenCount = scalar( $Param{UseHash} ? keys(%$Children) : @$Children );
         my $Item = {
-            txt =>	$ItemIDList->{$CycleID},
+            txt =>  $ItemIDList->{$CycleID},
             id => $CycleID,
             canhavechildren => $ChildrenCount ? "true" : "",
             items => $Children,
@@ -2660,7 +2690,7 @@ sub _JSONInternal {
         $Self->{CacheObject}->Set(
             Type  => 'FieldTree',
             Key   => $CacheKey,
-            Value => $Result,    		
+            Value => $Result,           
         );
     }
     
@@ -2737,16 +2767,16 @@ sub ChildItemList {
     my $ChildIDs;
     
     my $Childs = $Self->ItemList(
-    	ParentID => $ItemID,
+        ParentID => $ItemID,
     );
 
     foreach my $ChildID ( sort keys %{$Childs}) {
-    	$ChildIDs = $Self->ChildItemList(
-			ItemID => $ChildID,
-		);
-		push (@IDs, @{$ChildIDs});
-	}
-	return \@IDs;
+        $ChildIDs = $Self->ChildItemList(
+            ItemID => $ChildID,
+        );
+        push (@IDs, @{$ChildIDs});
+    }
+    return \@IDs;
 }
 
-1; 
+1;

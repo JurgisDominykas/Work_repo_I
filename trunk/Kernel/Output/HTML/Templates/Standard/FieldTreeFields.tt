@@ -10,82 +10,82 @@ Content-Type: text/html; charset=[% Env("UserCharset") %];
     <input type="hidden" name="NoFieldsLoaded" value="0" />
 [% RenderBlockEnd("NoFieldsLoaded") %]
 [% RenderBlockStart("Field") %]
-	<dl>
-		<dt class="[% Data.FieldClass %]" title="[% Data.Comment | html %]"><label for="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]">[% Data.FriendlyName | html %]:</label></dt>
+    <dl>
+        <dt class="[% Data.FieldClass %]" title="[% Data.Comment | html %]"><label for="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]">[% Data.FriendlyName | html %]:</label></dt>
 [% RenderBlockStart("InformationEnabled") %]
-		<dd>[% Data.Template %]</dd>
+        <dd>[% Data.Template %]</dd>
 [% RenderBlockEnd("InformationEnabled") %]
 [% RenderBlockStart("InformationDisabled") %]
-		<dd>[% Data.Template %]</dd>
+        <dd>[% Data.Template %]</dd>
 [% RenderBlockEnd("InformationDisabled") %]
 
 [% RenderBlockStart("TextEnabled") %]
-		<dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
+        <dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("TextEnabled") %]
 [% RenderBlockStart("TextDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("TextDisabled") %]
 [% RenderBlockStart("PhoneEnabled") %]
-		<dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] Validate_Phone" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]"  [% Data.Disabled | html %] /></dd>
+        <dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] Validate_Phone" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]"  [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("PhoneEnabled") %]
 [% RenderBlockStart("PhoneDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("PhoneDisabled") %]
 [% RenderBlockStart("MoneyEnabled") %]
-		<dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]"  class="[% Data.RequiredCssClass | html %] Validate_Money" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
+        <dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]"  class="[% Data.RequiredCssClass | html %] Validate_Money" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("MoneyEnabled") %]
 [% RenderBlockStart("MoneyDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("MoneyDisabled") %]
 [% RenderBlockStart("IntegerEnabled") %]
-		<dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]"  class="[% Data.RequiredCssClass | html %] Validate_Number" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
+        <dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]"  class="[% Data.RequiredCssClass | html %] Validate_Number" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("IntegerEnabled") %]
 [% RenderBlockStart("IntegerDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("IntegerDisabled") %]
 [% RenderBlockStart("DoubleEnabled") %]
-		<dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] Validate_Number" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
+        <dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" class="[% Data.RequiredCssClass | html %] Validate_Double" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("DoubleEnabled") %]
 [% RenderBlockStart("DoubleDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("DoubleDisabled") %]
 [% RenderBlockStart("Boolean") %]
-		<dd><input type="checkbox" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="1" [% Data.CheckedStr | html %] class="[% Data.RequiredCssClass | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
+        <dd><input type="checkbox" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="1" [% Data.CheckedStr | html %] class="[% Data.RequiredCssClass | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("Boolean") %]
 [% RenderBlockStart("MultiTextEnabled") %]
-		<dd><textarea name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" class="[% Data.RequiredCssClass | html %]" [% Data.Disabled | html %]>[% Data.Value | html %]</textarea></dd>
+        <dd><textarea name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" class="[% Data.RequiredCssClass | html %]" [% Data.Disabled | html %]>[% Data.Value | html %]</textarea></dd>
 [% RenderBlockEnd("MultiTextEnabled") %]
 [% RenderBlockStart("MultiTextDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("MultiTextDisabled") %]
 [% RenderBlockStart("DateTime") %]
-		<dd>[% Data.DataValue %]</dd>
+        <dd>[% Data.DataValue %]</dd>
 [% RenderBlockEnd("DateTime") %]
 [% RenderBlockStart("Select") %]
-		<dd>[% Data.SelectedStr %]</dd>
+        <dd>[% Data.SelectedStr %]</dd>
 [% RenderBlockEnd("Select") %]
 [% RenderBlockStart("EMailEnabled") %]
-		<dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]"  class="[% Data.RequiredCssClass | html %] Validate_Email"  [% Data.Disabled | html %] /></dd>
+        <dd><input type="text" name="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]" value="[% Data.Value | html %]" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]"  class="[% Data.RequiredCssClass | html %] Validate_Email"  [% Data.Disabled | html %] /></dd>
 [% RenderBlockEnd("EMailEnabled") %]
 [% RenderBlockStart("EMailDisabled") %]
-		<dd>[% Data.Value | html %]</dd>
+        <dd>[% Data.Value | html %]</dd>
 [% RenderBlockEnd("EMailDisabled") %]
 [% RenderBlockStart("RuleEscalateTo") %]
-		<dd>[% Data.QueueName %]
-			<script type="text/javascript">
-				var nodes = document.getElementById('QueueID');
-				if (nodes) {
-					nodes = nodes.childNodes
-					var i;
-					for (i=0; i<nodes.length; i++) {
-						  var o = nodes.item(i);
-					      if(o.value == '[% Data.Template %]') {
-					      	o.selected = true;
-					      }
-					}
-				}
-			</script>
-		</dd>
+        <dd>[% Data.QueueName %]
+            <script type="text/javascript">
+                var nodes = document.getElementById('QueueID');
+                if (nodes) {
+                    nodes = nodes.childNodes
+                    var i;
+                    for (i=0; i<nodes.length; i++) {
+                          var o = nodes.item(i);
+                          if(o.value == '[% Data.Template %]') {
+                            o.selected = true;
+                          }
+                    }
+                }
+            </script>
+        </dd>
 [% RenderBlockEnd("RuleEscalateTo") %]
 [% RenderBlockStart("UserInfoFetcherEnabled") %]
         <dd>
@@ -94,6 +94,6 @@ Content-Type: text/html; charset=[% Env("UserCharset") %];
         </dd>
 [% RenderBlockEnd("UserInfoFetcherEnabled") %]
 
-	</dl>
-	<div class="TooltipErrorMessage" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]Error">This field is required.</div>
+    </dl>
+    <div class="TooltipErrorMessage" id="[% Data.FieldPrefix | html %]_Field_[% Data.FieldID | html %]Error">This field is required.</div>
 [% RenderBlockEnd("Field") %]

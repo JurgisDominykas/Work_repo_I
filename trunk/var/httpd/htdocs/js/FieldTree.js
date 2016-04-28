@@ -151,6 +151,12 @@ Core.App.Ready(function () {
 		moneyTest = /^\$?[0-9]+(,[0-9]{3})*(\.[0-9]{2})?$/;
 		
 		return moneyTest.test(Value);
+	});:
+
+    $.validator.addMethod("Validate_Double", function (Value, Element) {
+		moneyTest = /^\$?[0-9]+(,[0-9]{3})*(\.[0-9]{2})?$/;
+		
+		return moneyTest.test(Value);
 	});
 	
     $('a.Level1Opener').click(function(e) {

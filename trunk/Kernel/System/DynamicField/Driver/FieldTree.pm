@@ -48,7 +48,6 @@ sub new {
 sub ValueGet {
     my ( $Self, %Param ) = @_;
 
-            
     my $DFValue = $Kernel::OM->Get('Kernel::System::DynamicFieldValue')->ValueGet(
         FieldID  => $Param{DynamicFieldConfig}->{ID},
         ObjectID => $Param{ObjectID},
@@ -57,7 +56,7 @@ sub ValueGet {
     return if !$DFValue;
     return if !IsArrayRefWithData($DFValue);
     return if !IsHashRefWithData( $DFValue->[0] );
-    
+
     my $Value;
     $Value->{ValueSetID} = $DFValue->[0]->{ValueInt};
     return $Value;
@@ -67,6 +66,9 @@ sub ValueSet {
     my ( $Self, %Param ) = @_;
 
     my $ValueSetID;
+
+    warn Dumper($Param{Value}->{FieldsValues});
+
     if ($Param{Value}->{ValueSetID} eq "NEW")
     {
         my $Result = $Kernel::OM->Get('Kernel::System::FieldTree')->ValueSetAdd(Data => $Param{Value}->{FieldsValues});
@@ -135,6 +137,8 @@ sub ValueValidate {
 sub SearchSQLGet {
     my ( $Self, %Param ) = @_;
 
+    warn Dumper(\%Param);
+
     if ( $Param{Operator} eq 'Equals' ) {
         my $SQL = " $Param{TableAlias}.value_int IN ( SELECT value_set_id FROM field_tree_value WHERE field_tree_id = ".$Kernel::OM->Get('Kernel::System::DB')->Quote( $Param{SearchTerm}.' ) ' );
         return $SQL;
@@ -175,8 +179,6 @@ sub EditFieldRender {
     }
     $Value = $Param{Value} if defined $Param{Value};
 
-    
-
     # extract the dynamic field value form the web request
     my $FieldValue = $Self->EditFieldValueGet(
         %Param,
@@ -216,11 +218,9 @@ sub EditFieldRender {
     # validation framework might rise an error while the user is still capable to enter text in the
     # FieldTree, otherwise the maxlenght property will prevent to enter more text than the maximum
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-    $Param{ParamObject}  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    #$Param{ParamObject}  = $Kernel::OM->Get('Kernel::System::Web::Request');
 
- if ($Param{ParamObject}) {
-        my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-
+    if ($Param{ParamObject}) {
         my %GetParam;
         for my $Key (qw(ProblemTypeID)) {
             $GetParam{$Key} = $Param{ParamObject}->GetParam( Param => $Key );
@@ -237,18 +237,18 @@ sub EditFieldRender {
             $Value = {};
             $Value->{ValueSetID} = "NEW";
         }
-            
+
         my @FieldTreeStructure = $Kernel::OM->Get('Kernel::System::FieldTree')->JSON(
             ItemID => $Kernel::OM->Get('Kernel::Config')->Get("FieldTree::ProblemTypeRootFieldTreeID"),
             Class => $Kernel::OM->Get('Kernel::Config')->Get("FieldTree::ProblemTypeClass"),
             ValueSetID => $Value->{ValueSetID},
             FieldTreeID => $GetParam{ProblemTypeID},
         );
-        
+
         if ($Value->{ValueSetID} eq "NEW")
         {
             my $FieldTreeIDFromPost = $Param{ParamObject}->GetParam(Param => $FieldName . '_FieldTreeID');
-            
+
             $LayoutObject->Block(
                 Name => 'FieldTree',
                 Data => {
@@ -262,8 +262,7 @@ sub EditFieldRender {
                     MandatoryFieldTreeClass => $Param{Mandatory} == '1' ? 'Validate_Required' : ''
                 },
             );
-            
-            
+
             # If user filled in some fields and form was submitted, but no ticket was created(due to error or
             # uploading attachment), script gets values sent by form and displays it again so that
             # user wouldn't loose it. 
@@ -273,7 +272,7 @@ sub EditFieldRender {
                     FieldTreeID => $FieldTreeIDFromPost,
                     Valid => 1,
                 );
-                
+
                 for my $FieldID ( keys %{$FieldIDList} ) {
                     $LayoutObject->Block(
                         Name => 'FieldTreeField',
@@ -284,11 +283,8 @@ sub EditFieldRender {
                         },
                     );
                 }
-                
-                
-            }
-            
 
+            }
             for my $Row (@FieldTreeStructure) {
                 $LayoutObject->Block(
                     Name => 'FieldTreeLevel1',
@@ -303,7 +299,7 @@ sub EditFieldRender {
                     FieldTreeID => $Row->{id},
                     Valid => 1,
                 );
-                
+
                 if (scalar @{ $Row->{items} } == 0 && ( scalar( keys %{$FieldIDList} )) == 0)
                 {
                     $Kernel::OM->Get('Kernel::System::Log')->Log(
@@ -329,7 +325,7 @@ sub EditFieldRender {
                         FieldTreeID => $RowLevel2->{id},
                         Valid => 1,
                     );
-                    
+
                     if (scalar @{ $RowLevel2->{items} } == 0 && ( scalar( keys %{$FieldIDListLevel3} )) == 0)
                     {
                         $LayoutObject->Block(
@@ -353,11 +349,10 @@ sub EditFieldRender {
         }
         else
         {
-            
             $Param{ItemRecursiveName} = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemRecursiveName(
                 ItemID => $Param{FieldTreeID},
             );
-            
+
             $LayoutObject->Block(
                     Name => 'FieldTreePreview',
                     Data => {
@@ -372,10 +367,8 @@ sub EditFieldRender {
                         ValueSetID => $Value->{ValueSetID},
                     },
                 );
-            
-            
         }
-            
+
         $HTMLString .= $LayoutObject->Output(
             TemplateFile => 'DynamicFieldFieldTree',
             Data         => {
@@ -384,29 +377,8 @@ sub EditFieldRender {
         );
     }
 
-
-
-#     # for client side validation
-     my $DivID = $FieldName . 'Error';
-
-    if ( $Param{Mandatory} ) {
-        $HTMLString .= <<"EOF";
-    <div id="$DivID" class="TooltipErrorMessage">
-        <p>
-            \$Text{"This field is required or The field content is too long! Maximum size is $Self->{MaxLength} characters."}
-        </p>
-    </div>
-EOF
-    }
-    else {
-        $HTMLString .= <<"EOF";
-    <div id="$DivID" class="TooltipErrorMessage">
-        <p>
-            \$Text{"The field content is too long! Maximum size is $Self->{MaxLength} characters."}
-        </p>
-    </div>
-EOF
-    }
+#   # for client side validation
+    my $DivID = $FieldName . 'Error';
 
     if ( $Param{ServerError} ) {
 
@@ -440,7 +412,6 @@ EOF
     return $Data;
 }
 
-
 sub EditFieldValueGet {
     my ( $Self, %Param ) = @_;
 
@@ -456,7 +427,7 @@ sub EditFieldValueGet {
 
     # otherwise get dynamic field value form param
     else {
-        $Value->{ValueSetID} = $Param{ParamObject}->GetParam( Param => $FieldName ); 
+        $Value->{ValueSetID} = $Kernel::OM->Get("Kernel::System::Web::Request")->GetParam( Param => $FieldName );
     }
 
     if ( defined $Param{ReturnTemplateStructure} && $Param{ReturnTemplateStructure} eq '1' ) {
@@ -464,7 +435,7 @@ sub EditFieldValueGet {
             $FieldName => $Value,
         };
     }
-   
+
     if (!$Param{ParamObject}) {
         # when running GenericAgent jobs ParamObject is not supplied here!
         return $Value;
@@ -478,8 +449,7 @@ sub EditFieldValueGet {
 #       Priority => 'error',
 #       Message  => "Dumping ".Dumper(\%Param),
 #   );
-                                                       
-    
+
     my $FieldsValues;
     if(defined($FieldTreeID)) {
         $FieldsValues = $Kernel::OM->Get('Kernel::System::FieldTree')->GetFieldsValues(
@@ -494,19 +464,14 @@ sub EditFieldValueGet {
 #           Message  => "FieldsValues ".Dumper($FieldsValues),
 #    );
 
-    
     $Value->{FieldsValues} = $FieldsValues;
 
     # for this field the normal return an the ReturnValueStructure are the same
     return $Value;
 }
 
-
-
 sub EditFieldValueValidate {
     my ( $Self, %Param ) = @_;
-
-
 
     # get the field value from the http request
     my $Value = $Self->EditFieldValueGet(
@@ -582,9 +547,29 @@ sub DisplayValueRender {
 
     my $FieldTree = $Self->EditFieldRender(%Param, 'ReadOnly' => '1');
 
+    my $Value;
+
+    my $FieldTreeObj = $Kernel::OM->Get('Kernel::System::FieldTree');
+
+    my $ValueSetID = $Param{LayoutObject}->{BlockData}->[0]->{Data}->{"DynamicField_" . "$Param{DynamicFieldConfig}->{Name}"}->{ValueSetID};
+    my $Values = $FieldTreeObj->ValueSetGet(
+        ValueSetID => $ValueSetID,
+    );
+    $Value .= "<ul>";
+    for my $item (sort keys %$Values) {
+        my $FieldType = $FieldTreeObj->FieldGet(FieldID => $item,)->{FieldType};
+        my $FieldName = $FieldTreeObj->FieldGet(FieldID => $item,)->{FriendlyName};
+        warn Dumper($FieldName);
+        if ($FieldType eq 'Select') {
+            $Values->{$item} = $FieldTreeObj->HumRedGenCat(FieldID => $item)->{$Values->{$item}};
+        }
+        $Value .= "<li>$FieldName - $Values->{$item}</li>";
+    };
+    $Value .= "</ul>";
+
     # create return structure
     my $Data = {
-        Value => '',
+        Value => $Value,
         Title => '',
         Link  => '',
         Content => $FieldTree->{Field}
@@ -592,6 +577,7 @@ sub DisplayValueRender {
 
     return $Data;
 }
+
 sub SearchFieldRender {
     my ( $Self, %Param ) = @_;
 
@@ -657,46 +643,6 @@ sub IsSortable {
     return 0;
 }
 
-sub SearchFieldRender {
-    my ( $Self, %Param ) = @_;
-
-    # take config from field config
-    my $FieldConfig = $Param{DynamicFieldConfig}->{Config};
-    my $FieldName   = 'Search_DynamicField_' . $Param{DynamicFieldConfig}->{Name};
-    my $FieldLabel  = $Param{DynamicFieldConfig}->{Label};
-
-    # set the field value
-    my $Value = ( defined $Param{DefaultValue} ? $Param{DefaultValue} : '' );
-
-    # get the field value, this fuction is always called after the profile is loaded
-    my $FieldValue = $Self->SearchFieldValueGet(%Param);
-
-    # set values from profile if present
-    if ( defined $FieldValue ) {
-        $Value = $FieldValue;
-    }
-
-    # check and set class if necessary
-    my $FieldClass = 'DynamicFieldText';
-
-    my $HTMLString = <<"EOF";
-<input type="text" class="$FieldClass" id="$FieldName" name="$FieldName" title="$FieldLabel" value="$Value" />
-EOF
-
-    # call EditLabelRender on the common backend
-    my $LabelString = $Self->EditLabelRender(
-        DynamicFieldConfig => $Param{DynamicFieldConfig},
-        FieldName          => $FieldName,
-    );
-
-    my $Data = {
-        Field => $HTMLString,
-        Label => $LabelString,
-    };
-
-    return $Data;
-}
-
 sub SearchFieldValueGet {
     my ( $Self, %Param ) = @_;
 
@@ -755,7 +701,7 @@ sub _SortedFieldTree {
     my $TreeData = $Self->_FieldTree(
         Class => $Param{Class},
     );
-    my @TreeKeys = keys %{$TreeData};
+    my @TreeKeys = sort keys %{$TreeData}; #Pridejau sort funkcija
     return \@TreeKeys;
 }
 
@@ -776,15 +722,14 @@ sub _FieldTree {
     my $FieldIDs = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemList(
         Class => $Param{Class},
     );
-    
+
     for my $Key ( keys %{$FieldIDs} ) {
         $TreeData->{ $Key } = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemRecursiveName(
             ItemID => $Key,
         );
-    }    
+    }
     return $TreeData;
 }
-
 
 sub StatsFieldParameterBuild {
     my ( $Self, %Param ) = @_;
@@ -813,21 +758,23 @@ sub ReadableValueRender {
     my ( $Self, %Param ) = @_;
 
     my $Value = defined $Param{Value} ? $Param{Value} : '';
-    
+
     if ( !$Value || !$Value->{ValueSetID} || $Value->{ValueSetID} =~ /new/i )
     {
         return {};
     }
-    
+
     my $NewLine = defined $Param{NewLine} ? $Param{NewLine} : '<br />';
-    
+
     my $ValueSetID = $Value->{ValueSetID};
     my $FieldTreeID = $Kernel::OM->Get('Kernel::System::FieldTree')->ValueSetGetFieldTreeID(
         ValueSetID => $ValueSetID
     );
+
     my $FieldTreeName = $Kernel::OM->Get('Kernel::System::FieldTree')->ItemRecursiveName(
         ItemID => $FieldTreeID,
     );
+
     my $FieldIDList = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldList(
         FieldTreeID => $FieldTreeID,
         Valid => 1,
@@ -835,10 +782,10 @@ sub ReadableValueRender {
     my $ValueSet = $Kernel::OM->Get('Kernel::System::FieldTree')->ValueSetGet(
         ValueSetID => $ValueSetID
     );
-    
+
     my $Content = "";
     $Content .= "Pasirinkta kategorija: " . $FieldTreeName . "$NewLine $NewLine";
-    
+
     for my $FieldID ( keys %{$FieldIDList} ) {
         my $Field = $Kernel::OM->Get('Kernel::System::FieldTree')->FieldGet(
             FieldID => $FieldID,
@@ -855,7 +802,7 @@ sub ReadableValueRender {
         $Content .= "$FieldName: $Value$NewLine";
     }
     $Content .= "$NewLine $NewLine";
-    
+
     # create return structure
     my $Data = {
         Value => $Content,
@@ -921,7 +868,6 @@ sub RandomValueSet {
     };
 }
 
-
 sub ObjectMatch {
     my ( $Self, %Param ) = @_;
 
@@ -943,7 +889,6 @@ sub IsMatchable {
 
     return 1;
 }
-
 
 sub AJAXPossibleValuesGet {
     my ( $Self, %Param ) = @_;
